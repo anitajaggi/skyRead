@@ -1,0 +1,15 @@
+.scrollbar-hide {
+    scrollbar-width: none;
+    --webkit-overflow-scrolling: touch;
+    --webkit-scrollbar: none;
+    --moz-scrollbar: none;
+    --ms-scrollbar: none;
+}
+
+.active {
+    color: red;
+}
+
+body {
+    background: #eee;
+}
