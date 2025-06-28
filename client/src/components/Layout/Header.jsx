@@ -87,7 +87,7 @@ export const Header = () => {
             {isAuthenticated ? <LogoutButton /> : ""}
           </nav>
           <button
-            className="md:hidden text-white cursor-pointer"
+            className="md:hidden text-black cursor-pointer"
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
