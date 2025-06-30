@@ -62,7 +62,9 @@ export const getArticles = async (req, res) => {
   try {
     const articles = await articleModel
       .find({ status: true })
+      .sort({ createdAt: -1 })
       .populate("author", "username email");
+
     res.status(200).json({ articles, success: true });
   } catch (error) {
     res

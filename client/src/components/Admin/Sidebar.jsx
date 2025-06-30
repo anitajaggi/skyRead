@@ -7,11 +7,13 @@ export const Sidebar = () => {
     { name: "Article", path: "/dashboard/article" },
     { name: "Users", path: "/dashboard/users" },
     { name: "Messages", path: "/dashboard/messages" },
-    { name: "Setting", path: "/dashboard/setting" },
   ];
 
   return (
     <div className="sticky top-0 h-screen w-64 bg-white flex flex-col overflow-auto p-6 scrollbar-hide">
+      <NavLink to={"/"} className="text-2xl font-bold mb-6">
+        skyRead
+      </NavLink>
       <nav>
         <ul className="space-y-4">
           {navLinks.map((link) => (

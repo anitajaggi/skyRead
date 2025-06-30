@@ -27,42 +27,42 @@ export const Card = ({ selectedCategory }) => {
   }
 
   return (
-    <div className="flex flex-wrap justify-center md:justify-normal py-4">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       {filteredArticles.map((article, index) => (
-        <div key={index} className="bg-white card h-fit shadow p-2 m-2 w-80">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-500 text-sm">
-              {new Date(article.createdAt).toLocaleDateString()}
-            </span>
-            <span className="text-sm bg-pink-100 text-red-800 px-2">
-              {article.category}
-            </span>
-            <span className="text-gray-700 font-semibold">
-              {article.author?.username || "Unknown Author"}
-            </span>
-          </div>
+        <div className={index}>
           <NavLink to={`/articles/${article.slug}`} title="Read Article">
-            <h2 className="text-xl mb-2 font-bold">{article.title}</h2>
-            <img
-              src={article.imgUrl}
-              alt={article.title}
-              className="w-full h-48 object-cover"
-            />
-            <p className="text-black mt-2">
-              {article.content.slice(0, 100) || "No summary available."}...
-            </p>
-          </NavLink>
-          <div className="mt-2">
-            {article.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-1 px-1 bg-blue-100">
-                {article.tags.map((tag, i) => (
-                  <span key={i} className="text-xs mr-2 mb-1 py-0.5">
-                    {tag}
-                  </span>
-                ))}
+            <article class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div class="relative">
+                <img
+                  src={article.imgUrl}
+                  alt={article.title}
+                  class="w-full h-48 object-cover"
+                />
+                <span class="absolute top-3 right-3 px-3 py-1 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-full">
+                  {article.category}
+                </span>
               </div>
-            )}
-          </div>
+              <div class="p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">
+                  {article?.title
+                    ? article.title.length > 80
+                      ? `${article.title.slice(0, 80)}...`
+                      : article.title
+                    : "No title available."}
+                </h2>
+
+                <p class="text-gray-600 mb-4">
+                  {article.content.slice(0, 100) || "No summary available."}...
+                </p>
+                <div class="flex items-center space-x-3">
+                  <span class="text-sm text-gray-500">
+                    {article.author?.username || "Unknown Author"} •{" "}
+                    {new Date(article.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </article>
+          </NavLink>
         </div>
       ))}
     </div>

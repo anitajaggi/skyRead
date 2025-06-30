@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
+import { AdminHeader } from "./AdminHeader";
 import { useMediaQuery } from "../../utils/hook/useMediaQuery";
-import { MdMenuOpen } from "react-icons/md";
+import { useEffect, useState } from "react";
 
 export const DashboardLayout = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -21,16 +21,14 @@ export const DashboardLayout = () => {
       >
         <Sidebar />
       </div>
-
-      <div className="flex-1 p-4 md:p-6 overflow-auto scrollbar-hide">
-        <button
-          onClick={() => setIsSidebarOpen((prev) => !prev)}
-          className="mb-4 px-4 py-2 bg-red-600 text-white cursor-pointer rounded hover:bg-red-800 transition"
-        >
-          <MdMenuOpen />
-        </button>
-
-        <Outlet />
+      <div className="flex-1 overflow-auto bg-gray-50 scrollbar-hide">
+        <AdminHeader
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
+        <div className="p-4 md:p-6 lg:p-8">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
