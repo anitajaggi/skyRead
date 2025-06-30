@@ -46,6 +46,7 @@ export const LoginForm = () => {
           placeholder="you@example.com"
           value={loginData.email}
           onChange={handleOnChange}
+          autoComplete="username"
         />
       </div>
       <div>
