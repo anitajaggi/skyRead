@@ -1,13 +1,13 @@
 import cloudinary from "../middleware/cloudinary.js";
 import articleModel from "../model/articleModel.js";
+import fs from "fs/promises";
 import { generateSlug } from "../utils/slugify.js";
 
 export const createArticle = async (req, res) => {
   try {
-    let { title, content, tags, published, category } = req.body;
+    const { title, content, tags, published, category } = req.body;
     const author = req.user._id;
 
-    // Convert tags to array
     if (typeof tags === "string") {
       try {
         tags = JSON.parse(tags);
@@ -18,16 +18,13 @@ export const createArticle = async (req, res) => {
 
     let imageUrl = "";
 
-    // Handle file upload
     if (req.file) {
-      const base64 = req.file.buffer.toString("base64");
-      const dataUri = `data:${req.file.mimetype};base64,${base64}`;
-
-      const result = await cloudinary.uploader.upload(dataUri, {
+      const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "articles",
       });
 
       imageUrl = result.secure_url;
+      await fs.unlink(req.file.path);
     }
 
     const slug = generateSlug(title);
@@ -74,7 +71,7 @@ export const getArticles = async (req, res) => {
 export const updateArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    let { title, content, tags, published, category, imgUrl } = req.body;
+    let { title, content, tags, published, category } = req.body;
 
     if (typeof tags === "string") {
       try {
@@ -96,13 +93,14 @@ export const updateArticle = async (req, res) => {
     existingArticle.published =
       published !== undefined ? published : existingArticle.published;
 
-    // 📤 Upload new image to Cloudinary if provided as base64
-    if (imgUrl && imgUrl.startsWith("data:image/")) {
-      const result = await cloudinary.uploader.upload(imgUrl, {
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "articles",
       });
 
       existingArticle.imgUrl = result.secure_url;
+
+      await fs.unlink(req.file.path);
     }
 
     await existingArticle.save();

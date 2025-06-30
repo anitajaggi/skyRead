@@ -6,8 +6,8 @@ const generateToken = (res, user) => {
   });
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true,           // Always true in production
-    sameSite: "None",       // ← This is crucial for cross-site cookie sharing
+    secure: true, // Always true in production
+    sameSite: "None", // ← This is crucial for cross-site cookie sharing
     maxAge: 30 * 24 * 60 * 60 * 1000,
   });
   return token;
