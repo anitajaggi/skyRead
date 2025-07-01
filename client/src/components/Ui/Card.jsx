@@ -5,14 +5,11 @@ import { fetchArticles } from "../../features/Article/articleThunk";
 
 export const Card = ({ selectedCategory }) => {
   const dispatch = useDispatch();
-  const { articles, loading, error } = useSelector((state) => state.articles);
+  const { articles } = useSelector((state) => state.articles);
 
   useEffect(() => {
     dispatch(fetchArticles());
   }, [dispatch]);
-
-  if (loading) return <p>Loading Articles...</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
   const publishedArticles = articles?.filter((article) => article.published);
 
@@ -29,20 +26,20 @@ export const Card = ({ selectedCategory }) => {
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       {filteredArticles.map((article, index) => (
-        <div className={index}>
+        <div key={index}>
           <NavLink to={`/articles/${article.slug}`} title="Read Article">
-            <article class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-              <div class="relative">
+            <article className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+              <div className="relative">
                 <img
                   src={article.imgUrl}
                   alt={article.title}
-                  class="w-full h-48 object-cover"
+                  className="w-full h-48 object-cover"
                 />
-                <span class="absolute top-3 right-3 px-3 py-1 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-full">
+                <span className="absolute top-3 right-3 px-3 py-1 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-full">
                   {article.category}
                 </span>
               </div>
-              <div class="p-6">
+              <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-2">
                   {article?.title
                     ? article.title.length > 80
@@ -51,11 +48,11 @@ export const Card = ({ selectedCategory }) => {
                     : "No title available."}
                 </h2>
 
-                <p class="text-gray-600 mb-4">
+                <p className="text-gray-600 mb-4">
                   {article.content.slice(0, 100) || "No summary available."}...
                 </p>
-                <div class="flex items-center space-x-3">
-                  <span class="text-sm text-gray-500">
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-gray-500">
                     {article.author?.username || "Unknown Author"} •{" "}
                     {new Date(article.createdAt).toLocaleDateString()}
                   </span>

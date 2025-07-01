@@ -155,3 +155,24 @@ export const getArticleBySlug = async (req, res) => {
     res.status(500).json({ message: "Error fetching article", success: false });
   }
 };
+
+export const updateArticlePublishStatus = async (req, res) => {
+  try {
+    const { published } = req.body;
+    const article = await articleModel.findByIdAndUpdate(
+      req.params.id,
+      { published },
+      { new: true }
+    );
+    res.status(200).json({
+      success: true,
+      article,
+      message: "Publish status updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating publish status",
+      success: false,
+    });
+  }
+};

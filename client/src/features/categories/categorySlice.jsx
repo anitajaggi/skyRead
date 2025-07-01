@@ -12,6 +12,12 @@ const categorySlice = createSlice({
     loading: false,
     categories: [],
     error: null,
+    fieldErrors: {},
+  },
+  reducers: {
+    clearFieldError: (state, action) => {
+      delete state.fieldErrors?.[action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -29,15 +35,19 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.pending, (state) => {
         state.loading = true;
+        state.fieldErrors = {};
         state.error = null;
       })
       .addCase(createCategory.fulfilled, (state, action) => {
         state.loading = false;
         state.categories.push(action.payload);
+        state.fieldErrors = {};
+        state.error = null;
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.fieldErrors = action.payload?.fieldErrors || {};
       })
       .addCase(deleteCategory.pending, (state) => {
         state.loading = true;
@@ -55,6 +65,7 @@ const categorySlice = createSlice({
       })
       .addCase(updateCategory.pending, (state) => {
         state.loading = true;
+        state.fieldErrors = {};
         state.error = null;
       })
       .addCase(updateCategory.fulfilled, (state, action) => {
@@ -65,12 +76,16 @@ const categorySlice = createSlice({
         if (index !== -1) {
           state.categories[index] = action.payload;
         }
+        state.fieldErrors = {};
+        state.error = null;
       })
       .addCase(updateCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.fieldErrors = action.payload?.fieldErrors || {};
       });
   },
 });
 
 export default categorySlice.reducer;
+export const { clearFieldError } = categorySlice.actions;

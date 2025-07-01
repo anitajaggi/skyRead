@@ -4,26 +4,36 @@ import {
   fetchContacts,
   deleteContactMessage,
 } from "./contactThunk";
+
 const contactSlice = createSlice({
   name: "contact",
   initialState: {
     loading: false,
     contacts: [],
     error: null,
+    fieldErrors: {},
+  },
+  reducers: {
+    clearFieldError: (state, action) => {
+      delete state.fieldErrors?.[action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(sendContactMessage.pending, (state) => {
         state.loading = true;
+        state.fieldErrors = {};
         state.error = null;
       })
       .addCase(sendContactMessage.fulfilled, (state, action) => {
         state.loading = false;
         state.contacts.push(action.payload);
+        state.fieldErrors = {};
       })
       .addCase(sendContactMessage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.fieldErrors = action.payload?.fieldErrors || {};
       })
       .addCase(fetchContacts.pending, (state) => {
         state.loading = true;
@@ -55,3 +65,4 @@ const contactSlice = createSlice({
 });
 
 export default contactSlice.reducer;
+export const { clearFieldError } = contactSlice.actions;

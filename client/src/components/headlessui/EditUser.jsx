@@ -111,6 +111,7 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                   />
                 </div>
+
                 <div className="flex items-center">
                   <input
                     id="isAdmin"
@@ -118,11 +119,24 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                     type="checkbox"
                     checked={formData.isAdmin}
                     onChange={handleChange}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    readOnly={user?.isLastAdmin}
+                    onClick={(e) => {
+                      if (user?.isLastAdmin) {
+                        e.preventDefault();
+                        toast.error("Cannot demote the last remaining admin.");
+                      }
+                    }}
+                    className={`h-4 w-4 text-blue-600 border-gray-300 rounded ${
+                      user?.isLastAdmin
+                        ? "cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
                   />
                   <label
                     htmlFor="isAdmin"
-                    className="ml-2 block text-sm text-gray-700"
+                    className={`ml-2 block text-sm font-medium text-gray-700 ${
+                      user?.isLastAdmin ? "text-gray-400" : ""
+                    }`}
                   >
                     Is Admin
                   </label>

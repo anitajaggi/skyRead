@@ -10,12 +10,16 @@ export const sendContactMessage = createAsyncThunk(
       toast.success(response.data.message || "Message sent successfully! 🚀");
       return response.data;
     } catch (error) {
+      if (error.response && error.response.data.errors) {
+        return rejectWithValue({ fieldErrors: error.response.data.errors });
+      }
       return rejectWithValue(
         error.response?.data?.message || "Error sending message"
       );
     }
   }
 );
+
 export const fetchContacts = createAsyncThunk(
   "contact/fetchContacts",
   async (_, { rejectWithValue }) => {

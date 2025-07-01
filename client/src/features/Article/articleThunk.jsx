@@ -14,6 +14,9 @@ export const createArticle = createAsyncThunk(
       );
       return response.data.article;
     } catch (error) {
+      if (error.response && error.response.data.errors) {
+        return rejectWithValue({ fieldErrors: error.response.data.errors });
+      }
       return rejectWithValue(
         error.response?.data?.message || "Error creating article"
       );
@@ -74,6 +77,9 @@ export const updateArticle = createAsyncThunk(
       );
       return response.data.article;
     } catch (error) {
+      if (error.response && error.response.data.errors) {
+        return rejectWithValue({ fieldErrors: error.response.data.errors });
+      }
       return rejectWithValue(
         error.response?.data?.message || "Error creating article..."
       );
@@ -89,6 +95,19 @@ export const fetchArticleBySlug = createAsyncThunk(
       return res.data.article;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response.data.message);
+    }
+  }
+);
+
+export const updateArticlePublishStatus = createAsyncThunk(
+  "articles/updatePublishStatus",
+  async ({ id, published }, thunkAPI) => {
+    try {
+      const res = await axiosApi.put(`/articles/${id}/publish`, { published });
+      toast.success(res.data.message);
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
     }
   }
 );

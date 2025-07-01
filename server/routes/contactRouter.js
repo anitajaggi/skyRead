@@ -5,10 +5,11 @@ import {
   getContacts,
 } from "../controller/contactController.js";
 import { isAuthenticated, isAdmin } from "../middleware/auth.js";
+import { validateContact } from "../validations/validateContact.js";
 
 const router = express.Router();
 
-router.post("/", createContact);
+router.post("/", validateContact, createContact);
 router.get("/", isAuthenticated, isAdmin, getContacts);
 router.delete("/:contactId", isAuthenticated, isAdmin, deleteContact);
 

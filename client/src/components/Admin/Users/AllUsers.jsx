@@ -13,11 +13,14 @@ export const AllUsers = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { users, loading, error } = useSelector((state) => state.users);
+  const { users } = useSelector((state) => state.users);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
+
+  const isLastAdmin =
+    users.filter((u) => u.isAdmin).length === 1 && user?.isAdmin;
 
   useEffect(() => {
     if (user?.isAdmin) {
@@ -26,7 +29,9 @@ export const AllUsers = () => {
   }, [dispatch, user]);
 
   const handleEditClick = (user) => {
-    setUserToEdit(user);
+    const totalAdmins = users.filter((u) => u.isAdmin).length;
+    const isLastAdmin = totalAdmins === 1 && user.isAdmin;
+    setUserToEdit({ ...user, isLastAdmin });
     setIsEditOpen(true);
   };
 
@@ -52,8 +57,6 @@ export const AllUsers = () => {
 
   if (!user || !user.isAdmin)
     return <p>Access denied. Only admins can view users.</p>;
-  if (loading) return <p>Loading users...</p>;
-  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
@@ -125,6 +128,7 @@ export const AllUsers = () => {
         onClose={() => setIsEditOpen(false)}
         user={userToEdit}
         onSave={handleUserSave}
+        isLastAdmin={isLastAdmin}
       />
     </div>
   );

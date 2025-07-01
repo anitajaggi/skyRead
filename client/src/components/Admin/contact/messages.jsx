@@ -10,7 +10,7 @@ import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
 
 export const Messages = () => {
   const dispatch = useDispatch();
-  const { contacts, loading, error } = useSelector((state) => state.contacts);
+  const { contacts } = useSelector((state) => state.contacts);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
@@ -37,11 +37,9 @@ export const Messages = () => {
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
       <div className="p-4 border-b">
-        <h2 className="text-2xl font-semibold text-gray-800">Categories</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">Messages</h2>
       </div>
       <div className="overflow-x-auto">
-        {loading && <p>Loading categories...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
             <tr>

@@ -1,18 +1,18 @@
-export const Tabs = ({ tabs, activeTab, setActiveTab }) => {
+export const Tabs = ({ tabs, activeTab, setActiveTab, tabLabels = {} }) => {
   return (
     <div>
       <div className="flex border-b border-red-600 mb-4">
-        {Object.keys(tabs).map((tab) => (
+        {Object.keys(tabs).map((tabKey) => (
           <button
-            key={tab}
-            className={`px-4 py-2 ${
-              activeTab === tab
-                ? "border-b-3 border-red-600 text-red-600 font-bold"
-                : "text-gray-600"
+            key={tabKey}
+            onClick={() => setActiveTab(tabKey)}
+            className={`px-4 py-2 border-b-2 ${
+              activeTab === tabKey
+                ? "border-red-600 font-bold text-red-600"
+                : "border-transparent text-gray-600"
             }`}
-            onClick={() => setActiveTab(tab)}
           >
-            {tab}
+            {tabLabels[tabKey] || tabKey}
           </button>
         ))}
       </div>

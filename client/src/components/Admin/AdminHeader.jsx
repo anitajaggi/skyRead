@@ -1,8 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { FiLogOut, FiSettings } from "react-icons/fi";
 import { MdMenuOpen } from "react-icons/md";
+import { LogoutButton } from "../Ui/Logout";
+import { useSelector } from "react-redux";
 
 export const AdminHeader = ({ setIsSidebarOpen }) => {
+  const { user } = useSelector((state) => state.auth);
+  const initial = user.username?.charAt(0).toUpperCase() || "?";
+
   return (
     <header className="bg-white shadow px-4 py-3 flex justify-between items-center">
       <button
@@ -12,6 +17,9 @@ export const AdminHeader = ({ setIsSidebarOpen }) => {
         <MdMenuOpen />
       </button>
       <div className="flex items-center gap-4">
+        <div className="w-8 h-8 rounded-full border-2 border-green-600 text-xl text-center font-bold text-green-500">
+          {initial}
+        </div>
         <NavLink
           to="/dashboard/setting"
           className={({ isActive }) =>
@@ -25,13 +33,11 @@ export const AdminHeader = ({ setIsSidebarOpen }) => {
 
         <NavLink
           to={"/auth"}
-          className="text-gray-600 hover:text-red-500 transition"
+          className="flex gap-2 items-center text-red-500 hover:text-red-500 transition"
         >
+          <LogoutButton />
           <FiLogOut size={20} />
         </NavLink>
-        <div className="w-8 h-8 rounded-full border-2 border-red-600 text-xl text-center font-bold text-red-500">
-          A
-        </div>
       </div>
     </header>
   );

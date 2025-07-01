@@ -28,7 +28,7 @@ export const Dashboard = () => {
   const totalArticles = articles?.length || 0;
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex">
       <div className="flex-1 p-1">
         <h2 className="text-2xl font-bold">Admin Dashboard</h2>
         <p className="mt-2 font-bold text-red-600">{user.username}</p>

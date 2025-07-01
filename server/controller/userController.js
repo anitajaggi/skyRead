@@ -153,19 +153,41 @@ export const getUserById = async (req, res) => {
 // Update user by ID
 export const updateUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id); // Target user
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Check if request is demoting an admin
+    const isDemotingAdmin =
+      user.isAdmin && // currently an admin
+      req.body.hasOwnProperty("isAdmin") &&
+      req.body.isAdmin === false;
+
+    if (isDemotingAdmin) {
+      const adminCount = await User.countDocuments({ isAdmin: true });
+
+      if (adminCount <= 1) {
+        return res.status(400).json({
+          message: "Cannot demote the last remaining admin.",
+        });
+      }
+    }
+
+    // Update fields
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
-    user.isAdmin = Boolean(req.body.isAdmin);
+
+    // Only update isAdmin if provided in request
+    if (req.body.hasOwnProperty("isAdmin")) {
+      user.isAdmin = Boolean(req.body.isAdmin);
+    }
 
     await user.save();
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
+    console.error("Update failed:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

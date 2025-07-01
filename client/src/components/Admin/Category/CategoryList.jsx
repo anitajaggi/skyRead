@@ -9,7 +9,7 @@ import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
 
 export const CategoryList = ({ onEdit }) => {
   const dispatch = useDispatch();
-  const { categories, loading, error } = useSelector((state) => state.category);
+  const { categories } = useSelector((state) => state.category);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -39,8 +39,6 @@ export const CategoryList = ({ onEdit }) => {
         <h2 className="text-2xl font-semibold text-gray-800">Categories</h2>
       </div>
       <div className="overflow-x-auto">
-        {loading && <p>Loading categories...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
             <tr>

@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteArticle,
   fetchArticles,
+  updateArticlePublishStatus,
 } from "../../../features/Article/articleThunk";
 import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
 
 export const ArticleTable = ({ onEdit }) => {
   const dispatch = useDispatch();
-  const { articles, loading, error } = useSelector((state) => state.articles);
+  const { articles } = useSelector((state) => state.articles);
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [articleToDelete, setArticleDelete] = useState(null);
@@ -33,11 +34,17 @@ export const ArticleTable = ({ onEdit }) => {
     setArticleDelete(null);
   };
 
+  const handleTogglePublish = async (id, newStatus) => {
+    try {
+      await dispatch(updateArticlePublishStatus({ id, published: newStatus }));
+    } catch (err) {
+      console.error("Failed to update publish status", err);
+    }
+  };
+
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
       <div className="overflow-x-auto">
-        {loading && <p>Loading Articles...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
             <tr>
@@ -57,7 +64,7 @@ export const ArticleTable = ({ onEdit }) => {
               <tr key={index} className="border-b">
                 <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4">{article.category}</td>
-                <td className="px-6 py-4">{article.title}</td>
+                <td className="px-6 py-4">{article.title.slice(0, 30)}...</td>
                 <td className="py-2">
                   {article.imgUrl ? (
                     <img
@@ -70,33 +77,33 @@ export const ArticleTable = ({ onEdit }) => {
                   )}
                 </td>
                 <td className="px-6 py-4">
-                  {article.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 mb-1 py-0.5 rounded"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  <span className="inline-block text-xs text-blue-800 font-semibold">
+                    {article.tags.slice(0, 2).join(", ")}
+                    {article.tags.length > 2 && " ..."}
+                  </span>
                 </td>
-                <td className="px-6 py-4">{article.content.slice(0, 50)}...</td>
+
+                <td className="px-6 py-4">{article.content.slice(0, 30)}...</td>
                 <td className="px-6 py-4">{article.author.username}</td>
-                <td
-                  className={`px-6 py-4 font-bold ${
-                    article.published ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {article.published ? "Yes" : "No"}
+                <td className="text-center">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4 text-white cursor-pointer"
+                    checked={article.published}
+                    onChange={() =>
+                      handleTogglePublish(article._id, !article.published)
+                    }
+                  />
                 </td>
-                <td className="px-6 py-4 text-center">
+                <td className="text-center py-6 flex justify-center gap-2">
                   <button
-                    className="text-blue-600 cursor-pointer hover:text-blue-800 mr-2"
+                    className="text-blue-600 border cursor-pointer border-blue-600 rounded-full p-1 hover:bg-blue-100"
                     onClick={() => onEdit(article)}
                   >
                     <FaRegEdit />
                   </button>
                   <button
-                    className="text-red-600 cursor-pointer hover:text-red-800"
+                    className="text-red-600 border cursor-pointer border-red-600 rounded-full p-1 hover:bg-red-100"
                     onClick={() => handleDeleteClick(article._id)}
                   >
                     <FaRegTrashAlt />

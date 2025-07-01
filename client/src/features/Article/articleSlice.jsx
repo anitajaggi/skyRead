@@ -4,28 +4,38 @@ import {
   deleteArticle,
   fetchArticles,
   updateArticle,
+  updateArticlePublishStatus,
 } from "./articleThunk";
 
 const articleSlice = createSlice({
   name: "article",
   initialState: {
     loading: false,
+    fieldErrors: {},
     articles: [],
     error: null,
+  },
+  reducers: {
+    clearFieldError: (state, action) => {
+      delete state.fieldErrors?.[action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(createArticle.pending, (state) => {
         state.loading = true;
+        state.fieldErrors = {};
         state.error = null;
       })
       .addCase(createArticle.fulfilled, (state, action) => {
         state.loading = false;
         state.articles.push(action.payload);
+        state.fieldErrors = {};
       })
       .addCase(createArticle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.fieldErrors = action.payload?.fieldErrors || {};
       })
       .addCase(fetchArticles.pending, (state) => {
         state.loading = true;
@@ -55,6 +65,7 @@ const articleSlice = createSlice({
       })
       .addCase(updateArticle.pending, (state) => {
         state.loading = true;
+        state.fieldErrors = {};
         state.error = null;
       })
       .addCase(updateArticle.fulfilled, (state, action) => {
@@ -65,11 +76,29 @@ const articleSlice = createSlice({
         if (index !== -1) {
           state.articles[index] = action.payload;
         }
+        state.fieldErrors = {};
       })
       .addCase(updateArticle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.fieldErrors = action.payload?.fieldErrors || {};
+      })
+      .addCase(updateArticlePublishStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateArticlePublishStatus.fulfilled, (state, action) => {
+        const updated = action.payload.article;
+        const index = state.articles.findIndex((a) => a._id === updated._id);
+        if (index !== -1) {
+          state.articles[index].published = updated.published;
+        }
+      })
+      .addCase(updateArticlePublishStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 export default articleSlice.reducer;
+export const { clearFieldError } = articleSlice.actions;

@@ -4,11 +4,9 @@ export const createContact = async (req, res) => {
   try {
     const { username, email, message } = req.body;
 
-    if (!username || !email || !message) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
     const newContact = new contactModel({ username, email, message });
     await newContact.save();
+
     return res
       .status(201)
       .json({ message: "Message sent successfully", success: true });

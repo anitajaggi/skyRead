@@ -5,6 +5,7 @@ import { Tabs } from "../../../utils/Tabs";
 
 export const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [activeTab, setActiveTab] = useState("Categories");
   const formRef = useRef(null);
 
   const handleEdit = (category) => {
@@ -12,24 +13,42 @@ export const Category = () => {
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
-    setActiveTab(Object.keys(tabs)[1]);
+    setActiveTab("Form");
   };
 
+  // 🧠 Tab keys should be STATIC
   const tabs = {
     Categories: () => <CategoryList onEdit={handleEdit} />,
-    "Add Category": () => (
+    Form: () => (
       <CategoryForm
         selectedCategory={selectedCategory}
         clearSelection={() => setSelectedCategory(null)}
         ref={formRef}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab}
+        tabs={tabs}
       />
     ),
   };
-  const [activeTab, setActiveTab] = useState(Object.keys(tabs)[0]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="category">
+      <Tabs
+        tabs={tabs}
+        activeTab={activeTab}
+        setActiveTab={(tabKey) => {
+          setActiveTab(tabKey);
+          if (tabKey !== "Form" && selectedCategory) {
+            // 🧽 Clean up when leaving form tab
+            setSelectedCategory(null);
+          }
+        }}
+        // Optional: pass custom labels
+        tabLabels={{
+          Categories: "Categories",
+          Form: selectedCategory ? "Update Category" : "Create Category",
+        }}
+      />
     </div>
   );
 };

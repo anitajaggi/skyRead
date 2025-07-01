@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { sendContactMessage } from "../features/contact/contactThunk";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearFieldError } from "../features/contact/contactSlice";
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,24 +9,35 @@ export const Contact = () => {
     email: "",
     message: "",
   });
+
   const dispatch = useDispatch();
+  const { fieldErrors } = useSelector((state) => state.contacts);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+    if (fieldErrors[e.target.name]) {
+      dispatch(clearFieldError(e.target.name));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await dispatch(sendContactMessage(formData));
 
-    setFormData({ username: "", email: "", message: "" });
+    if (sendContactMessage.fulfilled.match(res)) {
+      setFormData({
+        username: "",
+        email: "",
+        message: "",
+      });
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-6">
+    <div className="min-h-screen flex items-center justify-center bg-white p-6 py-20">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8 grid md:grid-cols-2 gap-10">
         <div className="space-y-6">
           <h2 className="text-4xl font-bold text-gray-900">Get in touch</h2>
@@ -83,9 +95,15 @@ export const Contact = () => {
               value={formData.username}
               onChange={handleChange}
               placeholder="John Doe"
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500"
-              required
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500 ${
+                fieldErrors?.username ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors?.username && (
+              <p className="text-red-600 text-sm mt-1">
+                {fieldErrors.username}
+              </p>
+            )}
           </div>
 
           <div>
@@ -98,9 +116,13 @@ export const Contact = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"
-              required
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 ${
+                fieldErrors?.email ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors?.email && (
+              <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
+            )}
           </div>
 
           <div>
@@ -113,9 +135,13 @@ export const Contact = () => {
               value={formData.message}
               onChange={handleChange}
               placeholder="Your message..."
-              className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500"
-              required
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500 ${
+                fieldErrors?.message ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {fieldErrors?.message && (
+              <p className="text-red-600 text-sm mt-1">{fieldErrors.message}</p>
+            )}
           </div>
 
           <button

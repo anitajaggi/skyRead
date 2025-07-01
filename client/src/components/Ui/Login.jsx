@@ -61,10 +61,9 @@ export const LoginForm = () => {
           onChange={handleOnChange}
         />
       </div>
-      {/* {error && <p className="text-red-600 mt-2">{error.message}</p>} */}
       <button
         type="submit"
-        className="w-full bg-white text-black cursor-pointer py-2 rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+        className="w-full bg-white text-black cursor-pointer py-2 rounded-lg hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={!loginData.email || !loginData.password}
       >
         Login

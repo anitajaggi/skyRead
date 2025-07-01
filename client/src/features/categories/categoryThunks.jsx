@@ -22,6 +22,9 @@ export const createCategory = createAsyncThunk(
       toast.success(res.data.message || "Category created successfully 😎");
       return res.data;
     } catch (err) {
+      if (err.response && err.response.data.errors) {
+        return rejectWithValue({ fieldErrors: err.response.data.errors });
+      }
       return rejectWithValue(err.message || "Error creating category");
     }
   }
@@ -48,6 +51,9 @@ export const updateCategory = createAsyncThunk(
       toast.success(res.data.message || "Category updated successfully 😎");
       return res.data;
     } catch (err) {
+      if (err.response && err.response.data.errors) {
+        return rejectWithValue({ fieldErrors: err.response.data.errors });
+      }
       return rejectWithValue(err.message || "Error updating category");
     }
   }

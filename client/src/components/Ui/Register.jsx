@@ -73,7 +73,8 @@ export const RegisterForm = () => {
       </div>
       <button
         type="submit"
-        className="w-full bg-white cursor-pointer text-black py-2 rounded-lg hover:bg-red-600 transition"
+        className="w-full bg-white cursor-pointer text-black py-2 rounded-lg hover:bg-red-600 transition
+        disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={
           !registerData.username ||
           !registerData.email ||

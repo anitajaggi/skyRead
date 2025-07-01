@@ -3,9 +3,7 @@ import categoryModel from "../model/categoryModel.js";
 export const createCategory = async (req, res) => {
   try {
     const { category } = req.body;
-    if (!category) {
-      return res.status(400).json({ message: "Category is required" });
-    }
+
     const newCategory = new categoryModel({ category });
     await newCategory.save();
     return res

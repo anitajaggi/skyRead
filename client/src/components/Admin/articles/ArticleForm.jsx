@@ -6,9 +6,10 @@ import {
   updateArticle,
 } from "../../../features/Article/articleThunk";
 import { getAllCategories } from "../../../features/categories/categoryThunks";
+import { clearFieldError } from "../../../features/Article/articleSlice";
 
 export const ArticleForm = forwardRef(
-  ({ selectArticle, clearSelection }, ref) => {
+  ({ selectArticle, clearSelection, setActiveTab, tabs }, ref) => {
     const [articleData, setArticleData] = useState({
       title: "",
       content: "",
@@ -19,10 +20,9 @@ export const ArticleForm = forwardRef(
     });
     const [fileError, setFileError] = useState("");
     const dispatch = useDispatch();
+    const { fieldErrors } = useSelector((state) => state.articles);
 
-    const { categories, loading, error } = useSelector(
-      (state) => state.category
-    );
+    const { categories, loading } = useSelector((state) => state.category);
 
     useEffect(() => {
       dispatch(getAllCategories());
@@ -68,6 +68,9 @@ export const ArticleForm = forwardRef(
           [name]: value,
         }));
       }
+      if (fieldErrors[name]) {
+        dispatch(clearFieldError(e.target.name));
+      }
     };
 
     const handleSubmit = async (e) => {
@@ -80,6 +83,9 @@ export const ArticleForm = forwardRef(
             articleData,
           })
         );
+        if (updateArticle.fulfilled.match(res)) {
+          setActiveTab(Object.keys(tabs)[0]);
+        }
       } else {
         res = await dispatch(createArticle(articleData));
       }
@@ -107,18 +113,26 @@ export const ArticleForm = forwardRef(
             value={articleData.title}
             onChange={handleChange}
             placeholder="Title"
-            required
             className="border px-3 py-2 rounded w-full my-2"
           />
+          {fieldErrors.title && (
+            <p className="text-red-500 text-sm -mt-2 mb-2">
+              {fieldErrors.title}
+            </p>
+          )}
           <textarea
             name="content"
             value={articleData.content}
             onChange={handleChange}
             placeholder="Content"
-            required
             className="border px-3 py-2 rounded w-full my-2"
             rows="5"
           ></textarea>
+          {fieldErrors.content && (
+            <p className="text-red-500 text-sm -mt-2 mb-2">
+              {fieldErrors.content}
+            </p>
+          )}
           <input
             type="text"
             value={articleData.tags.join(", ")}
@@ -132,6 +146,11 @@ export const ArticleForm = forwardRef(
             placeholder="Tag"
             className="border px-3 py-2 rounded w-full my-2"
           />
+          {fieldErrors.tags && (
+            <p className="text-red-500 text-sm -mt-2 mb-2">
+              {fieldErrors.tags}
+            </p>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div>
               <select
@@ -149,18 +168,37 @@ export const ArticleForm = forwardRef(
                   </option>
                 ))}
               </select>
+              {fieldErrors.category && (
+                <p className="text-red-500 text-sm -mt-2 mb-2">
+                  {fieldErrors.category}
+                </p>
+              )}
             </div>
             <div>
-              {fileError && (
-                <p className="text-red-500 text-sm -mt-2 mb-2">{fileError}</p>
-              )}
               <input
                 type="file"
                 name="imgUrl"
                 onChange={handleChange}
-                id=""
+                id="imgUrl"
+                accept="image/*"
                 className="border px-3 py-2 rounded w-full my-2"
               />
+              {fileError && (
+                <p className="text-red-500 text-sm -mt-2 mb-2">{fileError}</p>
+              )}
+              <div>
+                {articleData.imgUrl && (
+                  <img
+                    src={
+                      typeof articleData.imgUrl === "string"
+                        ? articleData.imgUrl
+                        : URL.createObjectURL(articleData.imgUrl)
+                    }
+                    alt="Article"
+                    className="w-24 h-16 object-contain rounded border"
+                  />
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2 my-2">
