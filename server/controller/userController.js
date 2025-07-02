@@ -178,6 +178,11 @@ export const updateUserById = async (req, res) => {
     // Update fields
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+      user.password = hashedPassword;
+    }
 
     // Only update isAdmin if provided in request
     if (req.body.hasOwnProperty("isAdmin")) {

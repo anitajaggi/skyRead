@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
     isAdmin: false,
   });
 
+  const [adminError, setAdminError] = useState("");
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -17,11 +20,18 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
         password: "",
         isAdmin: Boolean(user.isAdmin),
       });
+      setAdminError("");
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    // Prevent changing isAdmin if this is the last admin
+    if (name === "isAdmin" && user?.isLastAdmin) {
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -87,6 +97,7 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Email
@@ -99,6 +110,7 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                     className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
                     Password (leave blank to keep unchanged)
@@ -112,35 +124,48 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                   />
                 </div>
 
-                <div className="flex items-center">
-                  <input
-                    id="isAdmin"
-                    name="isAdmin"
-                    type="checkbox"
-                    checked={formData.isAdmin}
-                    onChange={handleChange}
-                    readOnly={user?.isLastAdmin}
-                    onClick={(e) => {
-                      if (user?.isLastAdmin) {
-                        e.preventDefault();
-                        toast.error("Cannot demote the last remaining admin.");
-                      }
-                    }}
-                    className={`h-4 w-4 text-blue-600 border-gray-300 rounded ${
-                      user?.isLastAdmin
-                        ? "cursor-not-allowed"
-                        : "cursor-pointer"
-                    }`}
-                  />
-                  <label
-                    htmlFor="isAdmin"
-                    className={`ml-2 block text-sm font-medium text-gray-700 ${
-                      user?.isLastAdmin ? "text-gray-400" : ""
-                    }`}
-                  >
-                    Is Admin
-                  </label>
+                {/* Admin checkbox with error handling */}
+                <div>
+                  {adminError && (
+                    <p className="text-sm text-red-600 mb-1">{adminError}</p>
+                  )}
+                  <div className="flex items-center">
+                    <input
+                      id="isAdmin"
+                      name="isAdmin"
+                      type="checkbox"
+                      checked={formData.isAdmin}
+                      onChange={handleChange}
+                      onClick={(e) => {
+                        if (user?.isLastAdmin) {
+                          e.preventDefault();
+                          setAdminError(
+                            "Cannot demote the last remaining admin."
+                          );
+                          toast.error(
+                            "Cannot demote the last remaining admin."
+                          );
+                        } else {
+                          setAdminError("");
+                        }
+                      }}
+                      className={`h-4 w-4 text-blue-600 border-gray-300 rounded ${
+                        user?.isLastAdmin
+                          ? "cursor-not-allowed"
+                          : "cursor-pointer"
+                      }`}
+                    />
+                    <label
+                      htmlFor="isAdmin"
+                      className={`ml-2 block text-sm font-medium text-gray-700 ${
+                        user?.isLastAdmin ? "text-gray-400" : ""
+                      }`}
+                    >
+                      Is Admin
+                    </label>
+                  </div>
                 </div>
+
                 <div className="flex justify-end gap-2 pt-2">
                   <button
                     type="button"
