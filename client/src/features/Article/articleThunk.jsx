@@ -26,10 +26,12 @@ export const createArticle = createAsyncThunk(
 
 export const fetchArticles = createAsyncThunk(
   "article/fetchArticles",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const response = await axiosApi.get("/articles");
-      return response.data.articles;
+      const response = await axiosApi.get(
+        `/articles?page=${page}&limit=${limit}`
+      );
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Error fetching articles"

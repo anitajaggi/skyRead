@@ -9,14 +9,18 @@ import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
 
 export const CategoryList = ({ onEdit }) => {
   const dispatch = useDispatch();
-  const { categories } = useSelector((state) => state.category);
+  const { categories, currentPage, totalPages, loading } = useSelector(
+    (state) => state.category
+  );
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
-    dispatch(getAllCategories());
-  }, [dispatch]);
+    dispatch(getAllCategories({ page, limit }));
+  }, [dispatch, page, limit]);
 
   const handleDeleteClick = (id) => {
     setCategoryToDelete(id);
@@ -27,7 +31,7 @@ export const CategoryList = ({ onEdit }) => {
     if (!categoryToDelete) return;
     const res = await dispatch(deleteCategory(categoryToDelete));
     if (deleteCategory.fulfilled.match(res)) {
-      await dispatch(getAllCategories());
+      await dispatch(getAllCategories({ page, limit }));
     }
     setIsConfirmOpen(false);
     setCategoryToDelete(null);
@@ -50,7 +54,9 @@ export const CategoryList = ({ onEdit }) => {
           <tbody>
             {categories.map((category, index) => (
               <tr key={index} className="border-b">
-                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">
+                  {(currentPage - 1) * limit + index + 1}
+                </td>
                 <td className="px-6 py-4">{category.category}</td>
                 <td className="px-6 py-4 flex justify-center gap-2">
                   <button
@@ -71,7 +77,33 @@ export const CategoryList = ({ onEdit }) => {
           </tbody>
         </table>
       </div>
-
+      <div className="flex justify-end items-center p-4">
+        <button
+          disabled={page === 1 || loading}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={`px-3 py-1 mr-2 rounded-full ${
+            page === 1 || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Prev
+        </button>
+        <span className="mx-2 text-sm text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages || loading}
+          onClick={() => setPage((prev) => prev + 1)}
+          className={`px-3 py-1 ml-2 rounded-full ${
+            page === totalPages || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Next
+        </button>
+      </div>
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}

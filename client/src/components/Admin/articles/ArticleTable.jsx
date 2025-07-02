@@ -10,14 +10,19 @@ import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
 
 export const ArticleTable = ({ onEdit }) => {
   const dispatch = useDispatch();
-  const { articles } = useSelector((state) => state.articles);
+  const { articles, currentPage, totalPages, loading } = useSelector(
+    (state) => state.articles
+  );
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [articleToDelete, setArticleDelete] = useState(null);
+  const [page, setPage] = useState(1);
+
+  const limit = 10;
 
   useEffect(() => {
-    dispatch(fetchArticles());
-  }, [dispatch]);
+    dispatch(fetchArticles({ page, limit }));
+  }, [dispatch, page, limit]);
 
   const handleDeleteClick = (id) => {
     setArticleDelete(id);
@@ -28,7 +33,7 @@ export const ArticleTable = ({ onEdit }) => {
     if (!articleToDelete) return;
     const res = await dispatch(deleteArticle(articleToDelete));
     if (deleteArticle.fulfilled.match(res)) {
-      await dispatch(fetchArticles());
+      await dispatch(fetchArticles({ page, limit }));
     }
     setIsConfirmOpen(false);
     setArticleDelete(null);
@@ -36,7 +41,12 @@ export const ArticleTable = ({ onEdit }) => {
 
   const handleTogglePublish = async (id, newStatus) => {
     try {
-      await dispatch(updateArticlePublishStatus({ id, published: newStatus }));
+      const res = await dispatch(
+        updateArticlePublishStatus({ id, published: newStatus })
+      );
+      if (updateArticlePublishStatus.fulfilled.match(res)) {
+        await dispatch(fetchArticles({ page, limit }));
+      }
     } catch (err) {
       console.error("Failed to update publish status", err);
     }
@@ -62,8 +72,10 @@ export const ArticleTable = ({ onEdit }) => {
           <tbody>
             {articles?.map((article, index) => (
               <tr key={index} className="border-b">
-                <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4">{article.category}</td>
+                <td className="px-6 py-4">
+                  {(currentPage - 1) * limit + index + 1}
+                </td>
+                <td>{article?.category || "Uncategorized"}</td>
                 <td className="px-6 py-4">{article.title.slice(0, 30)}...</td>
                 <td className="py-2">
                   {article.imgUrl ? (
@@ -114,6 +126,34 @@ export const ArticleTable = ({ onEdit }) => {
           </tbody>
         </table>
       </div>
+      <div className="flex justify-end items-center p-4">
+        <button
+          disabled={page === 1 || loading}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={`px-3 py-1 mr-2 rounded-full ${
+            page === 1 || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Prev
+        </button>
+        <span className="mx-2 text-sm text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages || loading}
+          onClick={() => setPage((prev) => prev + 1)}
+          className={`px-3 py-1 ml-2 rounded-full ${
+            page === totalPages || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}

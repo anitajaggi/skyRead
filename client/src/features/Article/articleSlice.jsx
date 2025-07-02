@@ -14,6 +14,9 @@ const articleSlice = createSlice({
     fieldErrors: {},
     articles: [],
     error: null,
+    currentPage: 1,
+    totalPages: 1,
+    totalArticles: 0,
   },
   reducers: {
     clearFieldError: (state, action) => {
@@ -43,8 +46,12 @@ const articleSlice = createSlice({
       })
       .addCase(fetchArticles.fulfilled, (state, action) => {
         state.loading = false;
-        state.articles = action.payload;
+        state.articles = action.payload.data;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.totalArticles = action.payload.total;
       })
+
       .addCase(fetchArticles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -71,7 +78,7 @@ const articleSlice = createSlice({
       .addCase(updateArticle.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.articles.findIndex((article) => {
-          article._id === action.payload._id;
+          return article._id === action.payload._id;
         });
         if (index !== -1) {
           state.articles[index] = action.payload;

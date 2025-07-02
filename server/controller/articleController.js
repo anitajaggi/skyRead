@@ -59,17 +59,32 @@ export const createArticle = async (req, res) => {
 };
 
 export const getArticles = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 articles per page
+  const skip = (page - 1) * limit;
+
   try {
+    const total = await articleModel.countDocuments({ status: true });
+
     const articles = await articleModel
       .find({ status: true })
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .populate("author", "username email");
 
-    res.status(200).json({ articles, success: true });
+    res.status(200).json({
+      success: true,
+      data: articles,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching articles", success: false });
+    res.status(500).json({
+      message: "Error fetching articles",
+      success: false,
+    });
   }
 };
 
@@ -98,13 +113,23 @@ export const updateArticle = async (req, res) => {
     existingArticle.published =
       published !== undefined ? published : existingArticle.published;
 
-    // 📤 Upload new image to Cloudinary if provided as base64
-    if (imgUrl && imgUrl.startsWith("data:image/")) {
+    if (req.file) {
+      const base64 = req.file.buffer.toString("base64");
+      const dataUri = `data:${req.file.mimetype};base64,${base64}`;
+
+      const result = await cloudinary.uploader.upload(dataUri, {
+        folder: "articles",
+      });
+
+      existingArticle.imgUrl = result.secure_url;
+    } else if (imgUrl && imgUrl.startsWith("data:image/")) {
       const result = await cloudinary.uploader.upload(imgUrl, {
         folder: "articles",
       });
 
       existingArticle.imgUrl = result.secure_url;
+    } else if (imgUrl && !imgUrl.startsWith("http")) {
+      existingArticle.imgUrl = imgUrl;
     }
 
     await existingArticle.save();

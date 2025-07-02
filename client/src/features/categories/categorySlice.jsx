@@ -13,6 +13,9 @@ const categorySlice = createSlice({
     categories: [],
     error: null,
     fieldErrors: {},
+    currentPage: 1,
+    totalPages: 1,
+    totalCategories: 0,
   },
   reducers: {
     clearFieldError: (state, action) => {
@@ -21,18 +24,26 @@ const categorySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // GET ALL
       .addCase(getAllCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(getAllCategories.fulfilled, (state, action) => {
+        const { data, total, currentPage, totalPages } = action.payload;
         state.loading = false;
-        state.categories = action.payload;
+        state.categories = data;
+        state.totalCategories = total;
+        state.currentPage = currentPage;
+        state.totalPages = totalPages;
+        state.error = null;
       })
       .addCase(getAllCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
+      // CREATE
       .addCase(createCategory.pending, (state) => {
         state.loading = true;
         state.fieldErrors = {};
@@ -49,6 +60,8 @@ const categorySlice = createSlice({
         state.error = action.payload;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
+
+      // DELETE
       .addCase(deleteCategory.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -63,6 +76,8 @@ const categorySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      // UPDATE
       .addCase(updateCategory.pending, (state) => {
         state.loading = true;
         state.fieldErrors = {};
@@ -87,5 +102,5 @@ const categorySlice = createSlice({
   },
 });
 
-export default categorySlice.reducer;
 export const { clearFieldError } = categorySlice.actions;
+export default categorySlice.reducer;

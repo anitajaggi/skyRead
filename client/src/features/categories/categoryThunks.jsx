@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 
 export const getAllCategories = createAsyncThunk(
   "category/getAllCategories",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const res = await axiosApi.get("/categories");
-      return res.data.categories;
+      const res = await axiosApi.get(`/categories?page=${page}&limit=${limit}`);
+      return res.data;
     } catch (err) {
       return rejectWithValue(err.message || "Error fetching categories");
     }
@@ -25,6 +25,7 @@ export const createCategory = createAsyncThunk(
       if (err.response && err.response.data.errors) {
         return rejectWithValue({ fieldErrors: err.response.data.errors });
       }
+      toast.error(err.response.data.message || "Error creating category");
       return rejectWithValue(err.message || "Error creating category");
     }
   }

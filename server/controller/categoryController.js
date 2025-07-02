@@ -3,7 +3,15 @@ import categoryModel from "../model/categoryModel.js";
 export const createCategory = async (req, res) => {
   try {
     const { category } = req.body;
-
+    const existingCategory = await categoryModel.findOne({
+      category: category.toLowerCase(),
+    });
+    if (existingCategory) {
+      return res.status(400).json({
+        message: "Category already exists",
+        success: false,
+      });
+    }
     const newCategory = new categoryModel({ category });
     await newCategory.save();
     return res
@@ -17,13 +25,30 @@ export const createCategory = async (req, res) => {
 };
 
 export const getCategories = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 categories per page
+  const skip = (page - 1) * limit;
+
   try {
-    const categories = await categoryModel.find({ status: true });
-    return res.status(200).json({ categories, success: true });
+    const total = await categoryModel.countDocuments({ status: true });
+
+    const categories = await categoryModel
+      .find({ status: true })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      data: categories,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Somthing went wrong! Try Again.", success: false });
+    res.status(500).json({
+      message: "Error fetching categories",
+      success: false,
+    });
   }
 };
 

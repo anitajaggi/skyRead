@@ -9,7 +9,10 @@ import { getAllCategories } from "../../../features/categories/categoryThunks";
 import { clearFieldError } from "../../../features/Article/articleSlice";
 
 export const ArticleForm = forwardRef(
-  ({ selectArticle, clearSelection, setActiveTab, tabs }, ref) => {
+  (
+    { selectArticle, clearSelection, setActiveTab, tabs, page = 1, limit = 10 },
+    ref
+  ) => {
     const [articleData, setArticleData] = useState({
       title: "",
       content: "",
@@ -91,18 +94,19 @@ export const ArticleForm = forwardRef(
       }
 
       if (res.meta.requestStatus === "fulfilled") {
-        await dispatch(fetchArticles());
+        await dispatch(fetchArticles({ page, limit }));
         clearSelection?.();
+        setArticleData({
+          id: undefined,
+          title: "",
+          content: "",
+          tags: [],
+          imgUrl: null,
+          published: false,
+          category: "",
+        });
+        setActiveTab(Object.keys(tabs)[0]);
       }
-      setArticleData({
-        id: undefined,
-        title: "",
-        content: "",
-        tags: [],
-        imgUrl: null,
-        published: false,
-        category: "",
-      });
     };
     return (
       <form onSubmit={handleSubmit}>
