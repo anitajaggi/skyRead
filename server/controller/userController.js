@@ -70,9 +70,21 @@ export const logout = async (req, res) => {
 
 // Get all users
 export const getAllUsers = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const users = await User.find({ status: "active" });
-    res.status(200).json(users);
+    const users = await User.find({ status: "active" }).skip(skip).limit(limit);
+
+    const totalUsers = await User.countDocuments({ status: "active" });
+
+    res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(totalUsers / limit),
+      totalUsers,
+      users,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

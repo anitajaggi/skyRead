@@ -17,7 +17,6 @@ export const ArticleTable = ({ onEdit }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [articleToDelete, setArticleDelete] = useState(null);
   const [page, setPage] = useState(1);
-
   const limit = 10;
 
   useEffect(() => {
@@ -33,7 +32,12 @@ export const ArticleTable = ({ onEdit }) => {
     if (!articleToDelete) return;
     const res = await dispatch(deleteArticle(articleToDelete));
     if (deleteArticle.fulfilled.match(res)) {
-      await dispatch(fetchArticles({ page, limit }));
+      // If there's only 1 article on this page and it's not the first page, go back a page
+      if (articles.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      } else {
+        await dispatch(fetchArticles({ page, limit }));
+      }
     }
     setIsConfirmOpen(false);
     setArticleDelete(null);

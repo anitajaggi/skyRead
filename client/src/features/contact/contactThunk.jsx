@@ -22,10 +22,12 @@ export const sendContactMessage = createAsyncThunk(
 
 export const fetchContacts = createAsyncThunk(
   "contact/fetchContacts",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const response = await axiosApi.get("/contacts");
-      return response.data.contacts;
+      const response = await axiosApi.get(
+        `/contacts?page=${page}&limit=${limit}`
+      );
+      return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Error fetching contacts"
@@ -46,6 +48,23 @@ export const deleteContactMessage = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Error deleting message"
+      );
+    }
+  }
+);
+
+export const deleteMultipleContacts = createAsyncThunk(
+  "contact/deleteMultipleContacts",
+  async (ids, { rejectWithValue }) => {
+    try {
+      const res = await axiosApi.delete("/contacts/bulkdelete", {
+        data: { ids },
+      });
+      toast.success(res.data.message || "Messages deleted successfully! 🚀");
+      return ids;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Bulk delete failed"
       );
     }
   }

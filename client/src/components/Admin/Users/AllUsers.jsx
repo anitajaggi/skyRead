@@ -13,20 +13,24 @@ export const AllUsers = () => {
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { users } = useSelector((state) => state.users);
+  const { users, currentPage, totalPages, loading } = useSelector(
+    (state) => state.users
+  );
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState(null);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const isLastAdmin =
     users.filter((u) => u.isAdmin).length === 1 && user?.isAdmin;
 
   useEffect(() => {
     if (user?.isAdmin) {
-      dispatch(getAllUsers());
+      dispatch(getAllUsers({ page, limit }));
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, page, limit]);
 
   const handleEditClick = (user) => {
     const totalAdmins = users.filter((u) => u.isAdmin).length;
@@ -40,7 +44,7 @@ export const AllUsers = () => {
     const res = await dispatch(updateUserById({ id, data }));
     setIsEditOpen(false);
     setUserToEdit(null);
-    dispatch(getAllUsers());
+    dispatch(getAllUsers({ page, limit }));
   };
 
   const handleDeleteClick = (id) => {
@@ -53,6 +57,13 @@ export const AllUsers = () => {
     const res = await dispatch(deleteUserById({ id: userToDelete }));
     setIsConfirmOpen(false);
     setUserToDelete(null);
+
+    // Check if we should go back a page
+    if (users.length === 1 && page > 1) {
+      setPage((prev) => prev - 1);
+    } else {
+      dispatch(getAllUsers({ page, limit }));
+    }
   };
 
   if (!user || !user.isAdmin)
@@ -87,7 +98,7 @@ export const AllUsers = () => {
           <tbody>
             {users.map((usr, index) => (
               <tr key={usr._id} className="border-b">
-                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>
                 <td className="px-6 py-4">{usr.username}</td>
                 <td className="px-6 py-4">{usr.email}</td>
                 <td
@@ -103,7 +114,13 @@ export const AllUsers = () => {
                     <FaRegEdit />
                   </button>
                   <button
-                    className="text-red-600 cursor-pointer border border-red-600 rounded-full p-1 hover:bg-red-100"
+                    className="text-red-600 cursor-pointer border border-red-600 rounded-full p-1 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={usr.isAdmin && isLastAdmin}
+                    title={
+                      usr.isAdmin && isLastAdmin
+                        ? "You can't delete the last admin"
+                        : "Delete user"
+                    }
                     onClick={() => handleDeleteClick(usr._id)}
                   >
                     <FaRegTrashAlt />
@@ -114,7 +131,33 @@ export const AllUsers = () => {
           </tbody>
         </table>
       </div>
-
+      <div className="flex justify-end items-center p-4">
+        <button
+          disabled={page === 1 || loading}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={`px-3 py-1 mr-2 rounded-full ${
+            page === 1 || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Prev
+        </button>
+        <span className="mx-2 text-sm text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages || loading}
+          onClick={() => setPage((prev) => prev + 1)}
+          className={`px-3 py-1 ml-2 rounded-full ${
+            page === totalPages || loading
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-red-600 text-white hover:bg-red-700"
+          }`}
+        >
+          Next
+        </button>
+      </div>
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}

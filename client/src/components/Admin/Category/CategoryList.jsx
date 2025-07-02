@@ -31,7 +31,11 @@ export const CategoryList = ({ onEdit }) => {
     if (!categoryToDelete) return;
     const res = await dispatch(deleteCategory(categoryToDelete));
     if (deleteCategory.fulfilled.match(res)) {
-      await dispatch(getAllCategories({ page, limit }));
+      if (categories.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      } else {
+        await dispatch(getAllCategories({ page, limit }));
+      }
     }
     setIsConfirmOpen(false);
     setCategoryToDelete(null);

@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { currentUser, registerUser } from "../../features/Auth/authThunk";
 import { useNavigate } from "react-router-dom";
+import { clearFieldError } from "../../features/Auth/authSlice";
 
 export const RegisterForm = () => {
+  const { fieldErrors } = useSelector((state) => state.auth);
+
   const [registerData, setRegisterData] = useState({
     username: "",
     email: "",
@@ -18,6 +21,9 @@ export const RegisterForm = () => {
       ...prevData,
       [name]: value,
     }));
+    if (fieldErrors[e.target.name]) {
+      dispatch(clearFieldError(e.target.name));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -46,6 +52,9 @@ export const RegisterForm = () => {
           value={registerData.username}
           onChange={handleOnChange}
         />
+        {fieldErrors?.username && (
+          <p className="text-red-600 text-sm mt-1">{fieldErrors.username}</p>
+        )}
       </div>
       <div>
         <label className="block text-gray-500">Email</label>
@@ -58,6 +67,9 @@ export const RegisterForm = () => {
           value={registerData.email}
           onChange={handleOnChange}
         />
+        {fieldErrors?.email && (
+          <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
+        )}
       </div>
       <div>
         <label className="block text-gray-500">Password</label>
@@ -70,16 +82,14 @@ export const RegisterForm = () => {
           value={registerData.password}
           onChange={handleOnChange}
         />
+        {fieldErrors?.password && (
+          <p className="text-red-600 text-sm mt-1">{fieldErrors.password}</p>
+        )}
       </div>
       <button
         type="submit"
         className="w-full bg-white cursor-pointer text-black py-2 rounded-lg hover:bg-red-600 transition
         disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={
-          !registerData.username ||
-          !registerData.email ||
-          !registerData.password
-        }
       >
         Register
       </button>

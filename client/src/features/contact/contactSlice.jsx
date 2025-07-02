@@ -3,6 +3,7 @@ import {
   sendContactMessage,
   fetchContacts,
   deleteContactMessage,
+  deleteMultipleContacts,
 } from "./contactThunk";
 
 const contactSlice = createSlice({
@@ -12,6 +13,9 @@ const contactSlice = createSlice({
     contacts: [],
     error: null,
     fieldErrors: {},
+    currentPage: 1,
+    totalPages: 1,
+    totalContacts: 0,
   },
   reducers: {
     clearFieldError: (state, action) => {
@@ -20,6 +24,7 @@ const contactSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle sending contact messages
       .addCase(sendContactMessage.pending, (state) => {
         state.loading = true;
         state.fieldErrors = {};
@@ -35,18 +40,25 @@ const contactSlice = createSlice({
         state.error = action.payload;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
+
+      // Handle fetching contacts (with pagination support)
       .addCase(fetchContacts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.loading = false;
-        state.contacts = action.payload;
+        state.contacts = action.payload.contacts || [];
+        state.currentPage = action.payload.currentPage || 1;
+        state.totalPages = action.payload.totalPages || 1;
+        state.totalContacts = action.payload.totalContacts || 0;
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
+
+      // Handle deleting a contact
       .addCase(deleteContactMessage.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -58,6 +70,21 @@ const contactSlice = createSlice({
         );
       })
       .addCase(deleteContactMessage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle deleting multiple contacts
+      .addCase(deleteMultipleContacts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMultipleContacts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.contacts = state.contacts.filter(
+          (contact) => !action.payload.includes(contact._id)
+        );
+      })
+      .addCase(deleteMultipleContacts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

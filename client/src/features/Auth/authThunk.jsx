@@ -11,6 +11,9 @@ export const loginUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       toast.error(error.response.data.message || "Login Failed");
+      if (error.response && error.response.data.errors) {
+        return rejectWithValue({ fieldErrors: error.response.data.errors });
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -25,6 +28,9 @@ export const registerUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       toast.error(error.response.data.message || "Registration Failed");
+      if (error.response && error.response.data.errors) {
+        return rejectWithValue({ fieldErrors: error.response.data.errors });
+      }
       return rejectWithValue(error.response.data);
     }
   }
@@ -72,12 +78,17 @@ export const updateUser = createAsyncThunk(
 
 export const getAllUsers = createAsyncThunk(
   "auth/getAllUsers",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
     try {
-      const response = await axiosApi.get("/users");
+      const response = await axiosApi.get("/users", {
+        params: { page, limit },
+      });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const message = error.response?.data || {
+        message: "Unknown error occurred",
+      };
+      return rejectWithValue(message);
     }
   }
 );

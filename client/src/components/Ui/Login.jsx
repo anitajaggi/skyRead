@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { currentUser, loginUser } from "../../features/Auth/authThunk";
+import { clearFieldError } from "../../features/Auth/authSlice";
 
 export const LoginForm = () => {
-  // const { error } = useSelector((state) => state.auth);
+  const { fieldErrors } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
@@ -18,6 +19,9 @@ export const LoginForm = () => {
       ...prevData,
       [name]: value,
     }));
+    if (fieldErrors[e.target.name]) {
+      dispatch(clearFieldError(e.target.name));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -48,6 +52,9 @@ export const LoginForm = () => {
           onChange={handleOnChange}
           autoComplete="username"
         />
+        {fieldErrors?.email && (
+          <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
+        )}
       </div>
       <div>
         <label className="block text-gray-500">Password</label>
@@ -60,11 +67,13 @@ export const LoginForm = () => {
           value={loginData.password}
           onChange={handleOnChange}
         />
+        {fieldErrors?.password && (
+          <p className="text-red-600 text-sm mt-1">{fieldErrors.password}</p>
+        )}
       </div>
       <button
         type="submit"
         className="w-full bg-white text-black cursor-pointer py-2 rounded-lg hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={!loginData.email || !loginData.password}
       >
         Login
       </button>
