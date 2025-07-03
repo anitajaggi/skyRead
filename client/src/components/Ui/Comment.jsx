@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addComment, getComments } from "../../features/comment/commentThunk";
 import { NavLink } from "react-router-dom";
 export default function CommentSection({ postId }) {
-  const { comments, loading, error } = useSelector((state) => state.comments);
+  const { comments } = useSelector((state) => state.comments);
   const { user } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -59,9 +59,7 @@ export default function CommentSection({ postId }) {
           {comments?.length === 1
             ? "1 Comment"
             : `${comments?.length || 0} Comments`}
-        </h3>{" "}
-        {loading && <p>Loading comments...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        </h3>
         <ul className="space-y-4">
           {comments.map((comment) => (
             <li
