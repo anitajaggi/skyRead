@@ -6,6 +6,7 @@ import {
   updateArticle,
   getArticleBySlug,
   updateArticlePublishStatus,
+  deleteMultipleArticles,
 } from "../controller/articleController.js";
 import { isAdmin, isAuthenticated } from "../middleware/auth.js";
 import { uploadImg } from "../middleware/upload.js";
@@ -22,6 +23,7 @@ router.post(
   createArticle
 );
 router.get("/", getArticles);
+router.delete("/bulkdelete", isAuthenticated, isAdmin, deleteMultipleArticles);
 router.delete("/:id", isAuthenticated, isAdmin, deleteArticle);
 router.put(
   "/:id",

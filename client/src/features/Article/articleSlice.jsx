@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createArticle,
   deleteArticle,
+  deleteMultipleArticles,
   fetchArticles,
   updateArticle,
   updateArticlePublishStatus,
@@ -25,6 +26,7 @@ const articleSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle article creation
       .addCase(createArticle.pending, (state) => {
         state.loading = true;
         state.fieldErrors = {};
@@ -40,6 +42,7 @@ const articleSlice = createSlice({
         state.error = action.payload;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
+      // Handle fetching articles with pagination
       .addCase(fetchArticles.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -56,6 +59,7 @@ const articleSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Handle deleting an article
       .addCase(deleteArticle.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -70,6 +74,7 @@ const articleSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      // Handle updating an article
       .addCase(updateArticle.pending, (state) => {
         state.loading = true;
         state.fieldErrors = {};
@@ -90,6 +95,7 @@ const articleSlice = createSlice({
         state.error = action.payload;
         state.fieldErrors = action.payload?.fieldErrors || {};
       })
+      // Handle updating article publish status
       .addCase(updateArticlePublishStatus.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -102,6 +108,21 @@ const articleSlice = createSlice({
         }
       })
       .addCase(updateArticlePublishStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Handle multiple article deletion
+      .addCase(deleteMultipleArticles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMultipleArticles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.articles = state.articles.filter(
+          (article) => !action.payload.includes(article._id)
+        );
+      })
+      .addCase(deleteMultipleArticles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

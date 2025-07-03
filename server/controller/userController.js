@@ -132,23 +132,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Delete user by ID
-export const deleteUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      if (user.isAdmin) {
-        return res.status(400).json({ message: "Cannot delete admin user" });
-      }
-      user.status = "inactive";
-      await user.save();
-      res.status(200).json({ message: "User deleted successfully" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 // Get user by ID
 export const getUserById = async (req, res) => {
   try {
@@ -206,5 +189,45 @@ export const updateUserById = async (req, res) => {
   } catch (error) {
     console.error("Update failed:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Delete user by ID
+export const deleteUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if (user.isAdmin) {
+        return res.status(400).json({ message: "Cannot delete admin user" });
+      }
+      user.status = "inactive";
+      await user.save();
+      res.status(200).json({ message: "User deleted successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Delete multiple users
+export const deleteMultipleUsers = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "No IDs provided for deletion." });
+    }
+
+    const result = await User.updateMany(
+      { _id: { $in: ids }, isAdmin: false },
+      { status: "inactive" }
+    );
+
+    return res.status(200).json({
+      message: "Users deleted successfully!",
+      result,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Bulk delete failed" });
   }
 };

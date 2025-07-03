@@ -88,3 +88,30 @@ export const deleteCategory = async (req, res) => {
       .json({ message: "Somthing went wrong! Try Again.", success: false });
   }
 };
+
+export const deleteMultipleCategories = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "No IDs provided for deletion." });
+    }
+
+    const result = await categoryModel.updateMany(
+      { _id: { $in: ids } },
+      { status: false }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "Categories deleted successfully",
+        result,
+        success: true,
+      });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Bulk delete failed", success: false });
+  }
+};

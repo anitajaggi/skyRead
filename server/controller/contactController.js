@@ -72,12 +72,21 @@ export const deleteMultipleContacts = async (req, res) => {
       return res.status(400).json({ message: "No IDs provided for deletion." });
     }
 
-    const result = await contactModel.deleteMany({ _id: { $in: ids } });
+    const result = await contactModel.updateMany(
+      { _id: { $in: ids } },
+      { status: false }
+    );
 
     return res
       .status(200)
-      .json({ message: "Messages deleted successfully!", result });
+      .json({
+        message: "Messages deleted successfully!",
+        result,
+        success: true,
+      });
   } catch (error) {
-    return res.status(500).json({ message: "Bulk delete failed" });
+    return res
+      .status(500)
+      .json({ message: "Bulk delete failed", success: false });
   }
 };

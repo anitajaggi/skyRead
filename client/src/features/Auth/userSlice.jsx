@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUserById, getAllUsers, updateUserById } from "./authThunk";
+import {
+  deleteMultipleUsers,
+  deleteUserById,
+  getAllUsers,
+  updateUserById,
+} from "./authThunk";
 
 const initialState = {
   users: [],
@@ -64,6 +69,22 @@ export const userSlice = createSlice({
         }
       })
       .addCase(updateUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // deleteMultipleUsers
+      .addCase(deleteMultipleUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMultipleUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = state.users.filter(
+          (user) => !action.payload.includes(user._id)
+        );
+        state.totalUsers -= action.payload.length;
+      })
+      .addCase(deleteMultipleUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

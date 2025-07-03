@@ -9,6 +9,7 @@ import {
   deleteUserById,
   getUserById,
   updateUserById,
+  deleteMultipleUsers,
 } from "../controller/userController.js";
 import { isAuthenticated, isAdmin } from "../middleware/auth.js";
 import { validateUser } from "../validations/validateUser.js";
@@ -25,6 +26,8 @@ router
   .route("/profile")
   .get(isAuthenticated, getCurrentUser)
   .put(isAuthenticated, updateProfile);
+
+router.delete("/bulkdelete", isAuthenticated, isAdmin, deleteMultipleUsers);
 
 router
   .route("/:id")

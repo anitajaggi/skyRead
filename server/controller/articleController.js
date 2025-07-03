@@ -68,7 +68,7 @@ export const getArticles = async (req, res) => {
 
     const articles = await articleModel
       .find({ status: true })
-      .sort({ createdAt: -1 })
+      // .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("author", "username email");
@@ -197,6 +197,34 @@ export const updateArticlePublishStatus = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Error updating publish status",
+      success: false,
+    });
+  }
+};
+
+export const deleteMultipleArticles = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No IDs provided for deletion.", success: false });
+    }
+
+    const result = await articleModel.updateMany(
+      { _id: { $in: ids } },
+      { status: false }
+    );
+    res.status(200).json({
+      message: "Articles deleted successfully!",
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.error("Bulk Delete Error:", error);
+    res.status(500).json({
+      message: "Error deleting articles",
       success: false,
     });
   }

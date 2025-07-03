@@ -113,3 +113,20 @@ export const updateArticlePublishStatus = createAsyncThunk(
     }
   }
 );
+
+export const deleteMultipleArticles = createAsyncThunk(
+  "article/deleteMultipleArticles",
+  async (ids, { rejectWithValue }) => {
+    try {
+      const res = await axiosApi.delete("/articles/bulkdelete", {
+        data: { ids },
+      });
+      toast.success(res.data.message || "Articles deleted successfully! 🚀");
+      return ids;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Bulk delete failed"
+      );
+    }
+  }
+);

@@ -59,3 +59,20 @@ export const updateCategory = createAsyncThunk(
     }
   }
 );
+
+export const deleteMultipleCategories = createAsyncThunk(
+  "category/deleteMultipleCategories",
+  async (ids, { rejectWithValue }) => {
+    try {
+      const res = await axiosApi.delete("/categories/bulkdelete", {
+        data: { ids },
+      });
+      toast.success(res.data.message || "Categories deleted successfully 😎");
+      return ids;
+    } catch (err) {
+      return rejectWithValue(
+        error.response?.data?.message || "Bulk delete failed"
+      );
+    }
+  }
+);

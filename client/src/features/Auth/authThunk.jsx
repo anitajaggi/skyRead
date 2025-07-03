@@ -119,3 +119,19 @@ export const updateUserById = createAsyncThunk(
     }
   }
 );
+
+export const deleteMultipleUsers = createAsyncThunk(
+  "auth/deleteMultipleUsers",
+  async (ids, { rejectWithValue }) => {
+    try {
+      const response = await axiosApi.delete("/users/bulkdelete", {
+        data: { ids },
+      });
+      toast.success(response.data.message || "Users deleted successfully");
+      return ids;
+    } catch (error) {
+      toast.error(error.response.data.message || "Error deleting users");
+      return rejectWithValue(error.response.data);
+    }
+  }
+);

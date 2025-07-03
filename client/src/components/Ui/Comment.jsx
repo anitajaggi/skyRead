@@ -25,7 +25,7 @@ export default function CommentSection({ postId }) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4 bg-white mt-5">
+    <div className="bg-white mt-5">
       <h2 className="text-xl font-bold mb-4 text-gray-800">Leave a Comment</h2>
       {user ? (
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -55,7 +55,11 @@ export default function CommentSection({ postId }) {
       )}
 
       <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">comments </h3>
+        <h3 className="text-xl font-semibold mb-4 text-gray-700">
+          {comments?.length === 1
+            ? "1 Comment"
+            : `${comments?.length || 0} Comments`}
+        </h3>{" "}
         {loading && <p>Loading comments...</p>}
         {error && <p style={{ color: "red" }}>Error: {error}</p>}
         <ul className="space-y-4">

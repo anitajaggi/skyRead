@@ -1,92 +1,47 @@
-import { useEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchContacts,
-  deleteContactMessage,
-  deleteMultipleContacts,
-} from "../../../features/contact/contactThunk";
-
 import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
+import { useMessagesLogic } from "./useMessagesLogic";
+import { Pagination } from "../../../utils/Pagination";
 
 export const Messages = () => {
-  const dispatch = useDispatch();
-  const { contacts, currentPage, totalPages, loading } = useSelector(
-    (state) => state.contacts
-  );
-
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [messageToDelete, setMessageToDelete] = useState(null);
-  const [page, setPage] = useState(1);
-  const [selectedMessages, setSelectedMessages] = useState([]);
-  const [isMultiConfirmOpen, setIsMultiConfirmOpen] = useState(false);
+  const {
+    contacts,
+    currentPage,
+    totalPages,
+    loading,
+    page,
+    setPage,
+    selectedMessages,
+    isConfirmOpen,
+    isMultiConfirmOpen,
+    handleDeleteClick,
+    handleDeleteConfirm,
+    handleCheckboxChange,
+    handleSelectAll,
+    handleBulkDelete,
+    handleBulkDeleteConfirm,
+    setIsConfirmOpen,
+    setIsMultiConfirmOpen,
+  } = useMessagesLogic();
 
   const limit = 10;
 
-  useEffect(() => {
-    dispatch(fetchContacts({ page, limit }));
-  }, [dispatch, page, limit]);
-
-  const handleDeleteClick = (id) => {
-    setMessageToDelete(id);
-    setIsConfirmOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!messageToDelete) return;
-    const res = await dispatch(deleteContactMessage(messageToDelete));
-
-    setIsConfirmOpen(false);
-    setMessageToDelete(null);
-    if (contacts.length === 1 && page > 1) {
-      setPage((prev) => prev - 1);
-    } else {
-      dispatch(fetchContacts({ page, limit }));
-    }
-  };
-
-  const handleCheckboxChange = (id) => {
-    setSelectedMessages((prev) =>
-      prev.includes(id) ? prev.filter((msgId) => msgId !== id) : [...prev, id]
-    );
-  };
-
-  const handleSelectAll = () => {
-    const allIds = contacts.map((msg) => msg._id);
-    if (selectedMessages.length === contacts.length) {
-      setSelectedMessages([]);
-    } else {
-      setSelectedMessages(allIds);
-    }
-  };
-
-  const handleBulkDelete = async () => {
-    if (selectedMessages.length === 0) return;
-    setIsMultiConfirmOpen(true);
-  };
-
-  const handleBulkDeleteConfirm = async () => {
-    const res = await dispatch(deleteMultipleContacts(selectedMessages));
-    if (deleteMultipleContacts.fulfilled.match(res)) {
-      setSelectedMessages([]);
-      dispatch(fetchContacts({ page, limit }));
-    }
-    setIsMultiConfirmOpen(false);
-  };
-
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
+      {/* Header */}
       <div className="p-4 border-b flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-gray-800">Messages</h2>
         {selectedMessages.length > 0 && (
           <button
             onClick={handleBulkDelete}
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            className="bg-red-600 text-sm text-white px-2 py-2 rounded hover:bg-red-700"
           >
             Delete Selected ({selectedMessages.length})
           </button>
         )}
       </div>
+
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
@@ -118,7 +73,7 @@ export const Messages = () => {
                     onChange={() => handleCheckboxChange(msg._id)}
                   />
                 </td>
-                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>
                 <td className="px-6 py-4">{msg.username}</td>
                 <td className="px-6 py-4">{msg.email}</td>
                 <td className="px-6 py-4">{msg.message}</td>
@@ -135,34 +90,17 @@ export const Messages = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end items-center p-4">
-        <button
-          disabled={page === 1 || loading}
-          onClick={() => setPage((prev) => prev - 1)}
-          className={`px-3 py-1 mr-2 rounded-full ${
-            page === 1 || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Prev
-        </button>
-        <span className="mx-2 text-sm text-gray-700">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          disabled={page === totalPages || loading}
-          onClick={() => setPage((prev) => prev + 1)}
-          className={`px-3 py-1 ml-2 rounded-full ${
-            page === totalPages || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Next
-        </button>
-      </div>
 
+      {/* Pagination */}
+      <Pagination
+        page={page}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        loading={loading}
+        onPageChange={setPage}
+      />
+
+      {/* Confirmation dialogs */}
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
@@ -170,7 +108,6 @@ export const Messages = () => {
         title="Delete Message"
         description="Are you sure you want to delete this message? This action cannot be undone."
       />
-
       <ConfirmDialog
         isOpen={isMultiConfirmOpen}
         onClose={() => setIsMultiConfirmOpen(false)}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { fetchArticles } from "../../features/Article/articleThunk";
+import { Pagination } from "../../utils/Pagination";
 
 export const Card = ({ selectedCategory }) => {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ export const Card = ({ selectedCategory }) => {
   );
 
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const limit = 9;
 
   useEffect(() => {
     dispatch(fetchArticles({ page, limit }));
@@ -69,33 +70,13 @@ export const Card = ({ selectedCategory }) => {
       </div>
 
       {/* Pagination Buttons */}
-      <div className="flex justify-center items-center mt-6 space-x-4">
-        <button
-          disabled={page === 1 || loading}
-          onClick={() => setPage((prev) => prev - 1)}
-          className={`px-4 py-2 rounded-full ${
-            page === 1 || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Prev
-        </button>
-        <span className="text-sm text-gray-600">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          disabled={page === totalPages || loading}
-          onClick={() => setPage((prev) => prev + 1)}
-          className={`px-4 py-2 rounded-full ${
-            page === totalPages || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        page={page}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        loading={loading}
+        onPageChange={setPage}
+      />
     </div>
   );
 };

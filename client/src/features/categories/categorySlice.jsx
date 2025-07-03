@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createCategory,
   deleteCategory,
+  deleteMultipleCategories,
   getAllCategories,
   updateCategory,
 } from "./categoryThunks";
@@ -98,6 +99,21 @@ const categorySlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.fieldErrors = action.payload?.fieldErrors || {};
+      })
+      // bulk delete
+      .addCase(deleteMultipleCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteMultipleCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = state.categories.filter(
+          (category) => !action.payload.includes(category._id)
+        );
+      })
+      .addCase(deleteMultipleCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

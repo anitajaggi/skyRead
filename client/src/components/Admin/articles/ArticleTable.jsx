@@ -1,67 +1,59 @@
-import { useEffect, useState } from "react";
+// ArticleTable.jsx
 import { FaRegTrashAlt, FaRegEdit } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteArticle,
-  fetchArticles,
-  updateArticlePublishStatus,
-} from "../../../features/Article/articleThunk";
 import { ConfirmDialog } from "../../headlessui/ConfirmDialog";
+import { useArticleTableLogic } from "./useArticleTableLogic";
+import { Pagination } from "../../../utils/Pagination";
 
+// Table component for displaying articles
 export const ArticleTable = ({ onEdit }) => {
-  const dispatch = useDispatch();
-  const { articles, currentPage, totalPages, loading } = useSelector(
-    (state) => state.articles
-  );
-
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [articleToDelete, setArticleDelete] = useState(null);
-  const [page, setPage] = useState(1);
-  const limit = 10;
-
-  useEffect(() => {
-    dispatch(fetchArticles({ page, limit }));
-  }, [dispatch, page, limit]);
-
-  const handleDeleteClick = (id) => {
-    setArticleDelete(id);
-    setIsConfirmOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!articleToDelete) return;
-    const res = await dispatch(deleteArticle(articleToDelete));
-    if (deleteArticle.fulfilled.match(res)) {
-      // If there's only 1 article on this page and it's not the first page, go back a page
-      if (articles.length === 1 && page > 1) {
-        setPage((prev) => prev - 1);
-      } else {
-        await dispatch(fetchArticles({ page, limit }));
-      }
-    }
-    setIsConfirmOpen(false);
-    setArticleDelete(null);
-  };
-
-  const handleTogglePublish = async (id, newStatus) => {
-    try {
-      const res = await dispatch(
-        updateArticlePublishStatus({ id, published: newStatus })
-      );
-      if (updateArticlePublishStatus.fulfilled.match(res)) {
-        await dispatch(fetchArticles({ page, limit }));
-      }
-    } catch (err) {
-      console.error("Failed to update publish status", err);
-    }
-  };
+  const {
+    articles,
+    currentPage,
+    totalPages,
+    loading,
+    page,
+    setPage,
+    isConfirmOpen,
+    selectedArticles,
+    isMultiConfirmOpen,
+    handleDeleteClick,
+    handleConfirmDelete,
+    handleTogglePublish,
+    setIsConfirmOpen,
+    handleSelectAll,
+    handleCheckboxChange,
+    setIsMultiConfirmOpen,
+    handleBulkDelete,
+    handleConfirmBulkDelete,
+  } = useArticleTableLogic();
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="p-4 border-b flex justify-between items-center">
+        <h2 className="text-2xl font-semibold text-gray-800">Messages</h2>
+        {selectedArticles.length > 0 && (
+          <button
+            onClick={handleBulkDelete}
+            className="bg-red-600 text-sm text-white px-2 py-2 rounded hover:bg-red-700"
+          >
+            Delete Selected ({selectedArticles.length})
+          </button>
+        )}
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
             <tr>
+              <th className="px-6 py-3">
+                <input
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  checked={
+                    selectedArticles.length === articles.length &&
+                    articles.length > 0
+                  }
+                />
+              </th>
               <th className="px-6 py-3">#</th>
               <th className="px-6 py-3">Category</th>
               <th className="px-6 py-3">Title</th>
@@ -75,9 +67,16 @@ export const ArticleTable = ({ onEdit }) => {
           </thead>
           <tbody>
             {articles?.map((article, index) => (
-              <tr key={index} className="border-b">
+              <tr key={article._id} className="border-b">
                 <td className="px-6 py-4">
-                  {(currentPage - 1) * limit + index + 1}
+                  <input
+                    type="checkbox"
+                    checked={selectedArticles.includes(article._id)}
+                    onChange={() => handleCheckboxChange(article._id)}
+                  />
+                </td>
+                <td className="px-6 py-4">
+                  {(currentPage - 1) * 10 + index + 1}
                 </td>
                 <td>{article?.category || "Uncategorized"}</td>
                 <td className="px-6 py-4">{article.title.slice(0, 30)}...</td>
@@ -98,7 +97,6 @@ export const ArticleTable = ({ onEdit }) => {
                     {article.tags.length > 2 && " ..."}
                   </span>
                 </td>
-
                 <td className="px-6 py-4">{article.content.slice(0, 30)}...</td>
                 <td className="px-6 py-4">{article.author.username}</td>
                 <td className="text-center">
@@ -130,40 +128,30 @@ export const ArticleTable = ({ onEdit }) => {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end items-center p-4">
-        <button
-          disabled={page === 1 || loading}
-          onClick={() => setPage((prev) => prev - 1)}
-          className={`px-3 py-1 mr-2 rounded-full ${
-            page === 1 || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Prev
-        </button>
-        <span className="mx-2 text-sm text-gray-700">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          disabled={page === totalPages || loading}
-          onClick={() => setPage((prev) => prev + 1)}
-          className={`px-3 py-1 ml-2 rounded-full ${
-            page === totalPages || loading
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-red-600 text-white hover:bg-red-700"
-          }`}
-        >
-          Next
-        </button>
-      </div>
 
+      {/* Pagination Controls */}
+      <Pagination
+        page={page}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        loading={loading}
+        onPageChange={setPage}
+      />
+
+      {/* Confirm Delete Dialog */}
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
         title="Delete Article"
         description="Are you sure you want to delete this article? This action cannot be undone."
+      />
+      <ConfirmDialog
+        isOpen={isMultiConfirmOpen}
+        onClose={() => setIsMultiConfirmOpen(false)}
+        onConfirm={handleConfirmBulkDelete}
+        title="Delete Selected Articles"
+        description={`Are you sure you want to delete ${selectedArticles.length} articles? This action cannot be undone.`}
       />
     </div>
   );

@@ -26,9 +26,10 @@ export const ArticleForm = forwardRef(
     const { fieldErrors } = useSelector((state) => state.articles);
 
     const { categories, loading } = useSelector((state) => state.category);
+    console.log("ArticleForm categories:", categories);
 
     useEffect(() => {
-      dispatch(getAllCategories());
+      dispatch(getAllCategories({ limit: 50, page: 1 }));
     }, [dispatch]);
 
     useEffect(() => {
