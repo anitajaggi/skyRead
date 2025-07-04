@@ -102,16 +102,29 @@ export const deleteMultipleCategories = async (req, res) => {
       { status: false }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Categories deleted successfully",
-        result,
-        success: true,
-      });
+    return res.status(200).json({
+      message: "Categories deleted successfully",
+      result,
+      success: true,
+    });
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Bulk delete failed", success: false });
+  }
+};
+
+export const getAllCategories = async (req, res) => {
+  try {
+    const categories = await categoryModel.find({ status: true });
+    return res.status(200).json({
+      message: "Categories fetched successfully",
+      success: true,
+      categories,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error fetching categories", success: false });
   }
 };

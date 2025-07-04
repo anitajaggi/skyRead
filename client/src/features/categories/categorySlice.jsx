@@ -3,6 +3,7 @@ import {
   createCategory,
   deleteCategory,
   deleteMultipleCategories,
+  fetchAllCategories,
   getAllCategories,
   updateCategory,
 } from "./categoryThunks";
@@ -11,9 +12,11 @@ const categorySlice = createSlice({
   name: "category",
   initialState: {
     loading: false,
-    categories: [],
+    categories: [], // categories: [], // This will hold the paginated categories for the admin dashboard
+    allCategories: [], // This will hold all categories
     error: null,
-    fieldErrors: {},
+    fieldErrors: {}, // This will hold field-specific errors for category creation and updates
+    // pagination
     currentPage: 1,
     totalPages: 1,
     totalCategories: 0,
@@ -25,7 +28,7 @@ const categorySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // GET ALL
+      // GET Limited Categories
       .addCase(getAllCategories.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -112,6 +115,18 @@ const categorySlice = createSlice({
         );
       })
       .addCase(deleteMultipleCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAllCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllCategories.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allCategories = action.payload.categories;
+      })
+      .addCase(fetchAllCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

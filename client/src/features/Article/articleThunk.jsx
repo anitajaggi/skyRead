@@ -12,6 +12,8 @@ export const createArticle = createAsyncThunk(
       toast.success(
         response.data.message || "Article created successfully! 🚀"
       );
+      console.log("Article created successfully:", response.data.article);
+
       return response.data.article;
     } catch (error) {
       if (error.response && error.response.data.errors) {

@@ -7,25 +7,20 @@ import { fetchArticles } from "../../features/Article/articleThunk";
 import { NavLink } from "react-router-dom";
 export const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
-  const { users } = useSelector((state) => state.users);
-  const { contacts } = useSelector((state) => state.contacts);
-  const { categories } = useSelector((state) => state.category);
-  const { articles } = useSelector((state) => state.articles);
+  const { totalUsers } = useSelector((state) => state.users);
+  const { totalContacts } = useSelector((state) => state.contacts);
+  const { totalCategories } = useSelector((state) => state.category);
+  const { totalArticles } = useSelector((state) => state.articles);
 
   const dispatch = useDispatch();
   useEffect(() => {
     if (user?.isAdmin) {
-      dispatch(getAllUsers());
-      dispatch(fetchContacts());
-      dispatch(getAllCategories());
-      dispatch(fetchArticles());
+      dispatch(getAllUsers({ totalUsers }));
+      dispatch(fetchContacts({ totalContacts }));
+      dispatch(getAllCategories({ totalCategories }));
+      dispatch(fetchArticles({ totalArticles }));
     }
   }, [dispatch, user]);
-
-  const totalUsers = users?.length || 0;
-  const totalMessages = contacts?.length || 0;
-  const totalCategories = categories?.length || 0;
-  const totalArticles = articles?.length || 0;
 
   return (
     <div className="flex">
@@ -49,7 +44,7 @@ export const Dashboard = () => {
             >
               Total Messages
             </NavLink>
-            <p className="mt-2">{totalMessages}</p>
+            <p className="mt-2">{totalContacts}</p>
           </div>
           <div className="p-4 bg-white shadow rounded">
             <NavLink

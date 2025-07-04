@@ -68,7 +68,7 @@ export const getArticles = async (req, res) => {
 
     const articles = await articleModel
       .find({ status: true })
-      // .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("author", "username email");

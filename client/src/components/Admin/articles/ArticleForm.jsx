@@ -5,8 +5,8 @@ import {
   fetchArticles,
   updateArticle,
 } from "../../../features/Article/articleThunk";
-import { getAllCategories } from "../../../features/categories/categoryThunks";
 import { clearFieldError } from "../../../features/Article/articleSlice";
+import { fetchAllCategories } from "../../../features/categories/categoryThunks";
 
 export const ArticleForm = forwardRef(
   (
@@ -25,11 +25,10 @@ export const ArticleForm = forwardRef(
     const dispatch = useDispatch();
     const { fieldErrors } = useSelector((state) => state.articles);
 
-    const { categories, loading } = useSelector((state) => state.category);
-    console.log("ArticleForm categories:", categories);
+    const { allCategories, loading } = useSelector((state) => state.category);
 
     useEffect(() => {
-      dispatch(getAllCategories({ limit: 50, page: 1 }));
+      dispatch(fetchAllCategories());
     }, [dispatch]);
 
     useEffect(() => {
@@ -167,7 +166,7 @@ export const ArticleForm = forwardRef(
                 <option disabled value="">
                   Select Category
                 </option>
-                {categories?.map((cat, index) => (
+                {allCategories?.map((cat, index) => (
                   <option key={index} value={cat.category}>
                     {cat.category}
                   </option>

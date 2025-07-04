@@ -1,8 +1,9 @@
 // src/app/store.js
+import { userReducer } from "../features/Auth/userSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import categoryReducer from "../features/categories/categorySlice";
+// import allCatReducer from "../components/Admin/Category/allCatSlice";
 import authReducer from "../features/Auth/authSlice";
-import { userReducer } from "../features/Auth/userSlice";
 import contactReducer from "../features/contact/contactSlice";
 import articleReducer from "../features/Article/articleSlice";
 import articleDetailsReducer from "../features/Article/articleSlugSlice";
@@ -17,5 +18,6 @@ export const store = configureStore({
     articles: articleReducer,
     articleDetails: articleDetailsReducer,
     comments: commentReducer,
+    // allCategories: allCatReducer,
   },
 });

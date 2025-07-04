@@ -76,3 +76,15 @@ export const deleteMultipleCategories = createAsyncThunk(
     }
   }
 );
+
+export const fetchAllCategories = createAsyncThunk(
+  "categories/fetchAllCat",
+  async (_, thunkAPI) => {
+    try {
+      const res = await axiosApi.get("/categories/allCategories");
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response.data);
+    }
+  }
+);
