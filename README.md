@@ -10,7 +10,6 @@ A clean and functional blog platform built using the MERN stack, designed for ad
 - ✍️ Admin-only blog creation and editing
 - 🗨️ User comment system
 - ❤️ Like functionality
-- 🔍 Search blogs by title/tags
 - 📄 Pagination support
 - ☁️ Cloudinary integration for blog images
 - 📱 Responsive UI with TailwindCSS
