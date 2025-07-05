@@ -7,6 +7,7 @@ export const Sidebar = () => {
     { name: "Article", path: "/dashboard/article" },
     { name: "Users", path: "/dashboard/users" },
     { name: "Messages", path: "/dashboard/messages" },
+    { name: "Comments", path: "/dashboard/comments" },
   ];
 
   return (

@@ -64,8 +64,8 @@ export const deleteMultipleCategories = createAsyncThunk(
   "category/deleteMultipleCategories",
   async (ids, { rejectWithValue }) => {
     try {
-      const res = await axiosApi.delete("/categories/bulkdelete", {
-        data: { ids },
+      const res = await axiosApi.post("/categories/bulk-delete", {
+        ids,
       });
       toast.success(res.data.message || "Categories deleted successfully 😎");
       return ids;

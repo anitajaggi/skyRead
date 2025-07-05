@@ -57,8 +57,8 @@ export const deleteMultipleContacts = createAsyncThunk(
   "contact/deleteMultipleContacts",
   async (ids, { rejectWithValue }) => {
     try {
-      const res = await axiosApi.delete("/contacts/bulkdelete", {
-        data: { ids },
+      const res = await axiosApi.post("/contacts/bulk-delete", {
+        ids,
       });
       toast.success(res.data.message || "Messages deleted successfully! 🚀");
       return ids;

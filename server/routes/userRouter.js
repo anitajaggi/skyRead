@@ -11,28 +11,29 @@ import {
   updateUserById,
   deleteMultipleUsers,
 } from "../controller/userController.js";
+
 import { isAuthenticated, isAdmin } from "../middleware/auth.js";
 import { validateUser } from "../validations/validateUser.js";
 
 const router = express.Router();
 
-router
-  .route("/")
-  .post(validateUser(true), register)
-  .get(isAuthenticated, isAdmin, getAllUsers);
 router.post("/login", validateUser(false), login);
 router.get("/logout", logout);
+router.post("/", validateUser(true), register);
+
 router
   .route("/profile")
   .get(isAuthenticated, getCurrentUser)
   .put(isAuthenticated, updateProfile);
 
-router.delete("/bulkdelete", isAuthenticated, isAdmin, deleteMultipleUsers);
+router.post("/bulk-delete", isAuthenticated, isAdmin, deleteMultipleUsers);
+
+router.get("/", isAuthenticated, isAdmin, getAllUsers);
 
 router
   .route("/:id")
-  .delete(isAuthenticated, isAdmin, deleteUserById)
   .get(isAuthenticated, isAdmin, getUserById)
-  .put(isAuthenticated, isAdmin, updateUserById);
+  .put(isAuthenticated, isAdmin, updateUserById)
+  .delete(isAuthenticated, isAdmin, deleteUserById);
 
 export default router;

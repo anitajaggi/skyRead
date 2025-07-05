@@ -120,8 +120,8 @@ export const deleteMultipleArticles = createAsyncThunk(
   "article/deleteMultipleArticles",
   async (ids, { rejectWithValue }) => {
     try {
-      const res = await axiosApi.delete("/articles/bulkdelete", {
-        data: { ids },
+      const res = await axiosApi.post("/articles/bulk-delete", {
+        ids,
       });
       toast.success(res.data.message || "Articles deleted successfully! 🚀");
       return ids;

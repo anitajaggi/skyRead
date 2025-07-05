@@ -124,8 +124,8 @@ export const deleteMultipleUsers = createAsyncThunk(
   "auth/deleteMultipleUsers",
   async (ids, { rejectWithValue }) => {
     try {
-      const response = await axiosApi.delete("/users/bulkdelete", {
-        data: { ids },
+      const response = await axiosApi.post("/users/bulk-delete", {
+        ids,
       });
       toast.success(response.data.message || "Users deleted successfully");
       return ids;

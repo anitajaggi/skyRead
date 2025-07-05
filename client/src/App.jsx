@@ -29,6 +29,7 @@ import { NotFoundPage } from "./components/Ui/404NotFound";
 
 import { UpdateProfileByUser } from "./components/user/UpdateProfile";
 import { Contact } from "./components/Contact";
+import { Comments } from "./components/Admin/comment/comments";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -58,6 +59,7 @@ const App = () => {
                 { path: "/dashboard/messages", element: <Messages /> },
                 { path: "/dashboard/profile", element: <UserDashboard /> },
                 { path: "/dashboard/article", element: <Article /> },
+                { path: "/dashboard/comments", element: <Comments /> },
                 {
                   path: "/dashboard/setting",
                   element: <UpdateProfileByUser />,

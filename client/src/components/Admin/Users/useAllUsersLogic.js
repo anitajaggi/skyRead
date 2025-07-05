@@ -55,9 +55,11 @@ export const useAllUsersLogic = () => {
 
   const handleUserSave = async (id, data) => {
     if (!id || !data) return;
-    await dispatch(updateUserById({ id, data }));
-    setIsEditOpen(false);
-    setUserToEdit(null);
+    const res = await dispatch(updateUserById({ id, data }));
+    if (res.meta.requestStatus === "fulfilled") {
+      setIsEditOpen(false);
+      setUserToEdit(null);
+    }
     refreshUserList(page);
   };
 

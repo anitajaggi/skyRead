@@ -41,19 +41,19 @@ export const login = async (req, res) => {
   }
 
   const existingUser = await User.findOne({ email });
-  if (!existingUser) {
-    return res.status(400).json({ message: "Invalid credentials" });
+
+  if (!existingUser || existingUser.status !== "active") {
+    return res.status(403).json({ message: "Account has been deactivated" });
   }
 
   const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
+
   if (!isPasswordMatch) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
-  if (isPasswordMatch) {
-    generateToken(res, existingUser._id);
-    return res.status(200).json({ message: "Login successful" });
-    // , user: existingUser
-  }
+
+  generateToken(res, existingUser._id);
+  return res.status(200).json({ message: "Login successful" });
 };
 
 // Logout user
@@ -148,21 +148,33 @@ export const getUserById = async (req, res) => {
 // Update user by ID
 export const updateUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id); // Target user
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if request is demoting an admin
+    // Check if new email already exists for another user
+    if (req.body.email && req.body.email !== user.email) {
+      const existingEmailUser = await User.findOne({ email: req.body.email });
+      if (
+        existingEmailUser &&
+        existingEmailUser._id.toString() !== user._id.toString()
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Email already in use by another user" });
+      }
+    }
+
+    // Check if admin is being demoted
     const isDemotingAdmin =
-      user.isAdmin && // currently an admin
+      user.isAdmin &&
       req.body.hasOwnProperty("isAdmin") &&
       req.body.isAdmin === false;
 
     if (isDemotingAdmin) {
       const adminCount = await User.countDocuments({ isAdmin: true });
-
       if (adminCount <= 1) {
         return res.status(400).json({
           message: "Cannot demote the last remaining admin.",
@@ -170,16 +182,15 @@ export const updateUserById = async (req, res) => {
       }
     }
 
-    // Update fields
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(req.body.password, salt);
       user.password = hashedPassword;
     }
 
-    // Only update isAdmin if provided in request
     if (req.body.hasOwnProperty("isAdmin")) {
       user.isAdmin = Boolean(req.body.isAdmin);
     }

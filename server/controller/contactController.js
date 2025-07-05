@@ -77,13 +77,11 @@ export const deleteMultipleContacts = async (req, res) => {
       { status: false }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Messages deleted successfully!",
-        result,
-        success: true,
-      });
+    return res.status(200).json({
+      message: "Messages deleted successfully!",
+      result,
+      success: true,
+    });
   } catch (error) {
     return res
       .status(500)

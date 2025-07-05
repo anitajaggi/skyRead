@@ -8,11 +8,14 @@ import {
   updateArticlePublishStatus,
   deleteMultipleArticles,
 } from "../controller/articleController.js";
+
 import { isAdmin, isAuthenticated } from "../middleware/auth.js";
 import { uploadImg } from "../middleware/upload.js";
 import { validateArticle } from "../validations/validateArticle.js";
 
 const router = express.Router();
+
+router.post("/bulk-delete", isAuthenticated, isAdmin, deleteMultipleArticles);
 
 router.post(
   "/",
@@ -22,9 +25,16 @@ router.post(
   validateArticle,
   createArticle
 );
+
 router.get("/", getArticles);
-router.delete("/bulkdelete", isAuthenticated, isAdmin, deleteMultipleArticles);
-router.delete("/:id", isAuthenticated, isAdmin, deleteArticle);
+
+router.put(
+  "/:id/publish",
+  isAuthenticated,
+  isAdmin,
+  updateArticlePublishStatus
+);
+
 router.put(
   "/:id",
   isAuthenticated,
@@ -33,11 +43,9 @@ router.put(
   validateArticle,
   updateArticle
 );
+
+router.delete("/:id", isAuthenticated, isAdmin, deleteArticle);
+
 router.get("/:slug", getArticleBySlug);
-router.put(
-  "/:id/publish",
-  isAuthenticated,
-  isAdmin,
-  updateArticlePublishStatus
-);
+
 export default router;

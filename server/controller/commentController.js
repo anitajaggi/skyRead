@@ -39,7 +39,7 @@ export const getComments = async (req, res) => {
   const { postId } = req.params;
 
   try {
-    const comments = await Comment.find({ post: postId })
+    const comments = await Comment.find({ post: postId, status: true })
       .populate("user", "username email")
       .sort({ createdAt: -1 });
 
@@ -52,6 +52,78 @@ export const getComments = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch comments",
+    });
+  }
+};
+
+export const getAllComments = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+
+  try {
+    const comments = await Comment.find({ status: true })
+      .populate("user", "username email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const totalComments = await Comment.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      comments,
+      totalPages: Math.ceil(totalComments / limit),
+      currentPage: Number(page),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch comments",
+    });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const deleteComment = await Comment.findById(commentId);
+    deleteComment.status = false;
+    deleteComment.save();
+    return res
+      .status(200)
+      .json({ message: "Comment deleted successfully", success: true });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Something went wrong! Try Again.", success: false });
+  }
+};
+
+export const deleteMultipleComments = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        message: "No IDs provided for deletion.",
+        success: false,
+      });
+    }
+
+    const result = await Comment.updateMany(
+      { _id: { $in: ids } },
+      { status: false }
+    );
+
+    return res.status(200).json({
+      message: `${result.modifiedCount} comment(s) deleted successfully!`,
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.error("Bulk delete error:", error);
+    return res.status(500).json({
+      message: "Bulk delete failed.",
+      success: false,
     });
   }
 };
