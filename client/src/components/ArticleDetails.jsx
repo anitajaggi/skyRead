@@ -26,7 +26,7 @@ export const ArticleDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2">
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+            <h1 className="sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               {article.title}
             </h1>
 
