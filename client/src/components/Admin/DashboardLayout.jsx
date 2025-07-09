@@ -6,11 +6,18 @@ import { useEffect, useRef, useState } from "react";
 
 export const DashboardLayout = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(isDesktop);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(min-width: 768px)").matches;
+    }
+    return false;
+  });
   const sidebarRef = useRef(null);
 
   useEffect(() => {
-    setIsSidebarOpen(isDesktop);
+    if (isDesktop) {
+      setIsSidebarOpen(true);
+    }
   }, [isDesktop]);
 
   useEffect(() => {
@@ -32,9 +39,11 @@ export const DashboardLayout = () => {
     <div className="flex h-screen overflow-hidden">
       <div
         ref={sidebarRef}
-        className={`${
-          isSidebarOpen ? "w-64" : "w-0"
-        } transition-all sticky top-0 duration-300 overflow-auto scrollbar-hide bg-white shadow-md`}
+        className={`
+          ${isSidebarOpen ? "w-64" : "w-0"}
+          transition-all duration-300 overflow-auto scrollbar-hide bg-white shadow-md z-50
+          ${isDesktop ? "sticky top-0 h-screen" : "fixed inset-y-0 left-0"}
+        `}
       >
         <Sidebar onNavigate={() => !isDesktop && setIsSidebarOpen(false)} />
       </div>
