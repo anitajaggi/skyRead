@@ -16,7 +16,6 @@ export const Category = () => {
     setActiveTab("Form");
   };
 
-  // 🧠 Tab keys should be STATIC
   const tabs = {
     Categories: () => <CategoryList onEdit={handleEdit} />,
     Form: () => (
@@ -39,11 +38,9 @@ export const Category = () => {
         setActiveTab={(tabKey) => {
           setActiveTab(tabKey);
           if (tabKey !== "Form" && selectedCategory) {
-            // 🧽 Clean up when leaving form tab
             setSelectedCategory(null);
           }
         }}
-        // Optional: pass custom labels
         tabLabels={{
           Categories: "Categories",
           Form: selectedCategory ? "Update Category" : "Create Category",

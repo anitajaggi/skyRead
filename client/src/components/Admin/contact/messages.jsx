@@ -28,9 +28,8 @@ export const Messages = () => {
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
-      {/* Header */}
       <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-800">Messages</h2>
+        <h2 className="text-2xl font-semibold text-indigo-700">Messages</h2>
         {selectedMessages.length > 0 && (
           <button
             onClick={handleBulkDelete}
@@ -41,10 +40,9 @@ export const Messages = () => {
         )}
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+          <thead className="bg-indigo-50 text-xs uppercase text-indigo-600 border-b border-indigo-100">
             <tr>
               <th className="px-6 py-3">
                 <input
@@ -54,6 +52,7 @@ export const Messages = () => {
                     selectedMessages.length === contacts.length &&
                     contacts.length > 0
                   }
+                  className="accent-indigo-600"
                 />
               </th>
               <th className="px-6 py-3">#</th>
@@ -71,6 +70,7 @@ export const Messages = () => {
                     type="checkbox"
                     checked={selectedMessages.includes(msg._id)}
                     onChange={() => handleCheckboxChange(msg._id)}
+                    className="accent-indigo-600"
                   />
                 </td>
                 <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>

@@ -32,6 +32,7 @@ export const CategoryForm = forwardRef(
     const handleSubmit = async (e) => {
       e.preventDefault();
       let res;
+
       if (category.id) {
         res = await dispatch(
           updateCategory({
@@ -55,28 +56,38 @@ export const CategoryForm = forwardRef(
 
     return (
       <form onSubmit={handleSubmit} ref={ref}>
-        <div className="p-4 bg-white rounded shadow">
-          <div className="my-2">
+        <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
+          <h3 className="text-lg font-semibold text-indigo-700">
+            {category.id ? "Edit Category" : "Add New Category"}
+          </h3>
+
+          <div>
             <input
               type="text"
               name="category"
               value={category.category}
               onChange={handleChange}
-              placeholder="Category Name"
-              className="border px-3 py-2 rounded w-full"
+              placeholder="Enter category name"
+              className={`w-full px-4 py-2 border rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                fieldErrors?.category ? "border-red-500" : "border-gray-300"
+              }`}
             />
             {fieldErrors?.category && (
-              <p className="text-red-600 text-sm mt-1">
+              <p className="text-sm text-red-600 mt-1">
                 {fieldErrors.category}
               </p>
             )}
           </div>
+
           <button
-            className={`text-white px-4 py-2 rounded focus:bg-gray-500 cursor-pointer ${
-              category.id ? "bg-green-600" : "bg-red-600"
+            type="submit"
+            className={`w-full py-2 rounded-lg text-white font-semibold transition duration-200 cursor-pointer ${
+              category.id
+                ? "bg-indigo-600 hover:bg-indigo-700"
+                : "bg-indigo-500 hover:bg-indigo-600"
             }`}
           >
-            {category.id ? "Update" : "Create"}
+            {category.id ? "Update Category" : "Create Category"}
           </button>
         </div>
       </form>

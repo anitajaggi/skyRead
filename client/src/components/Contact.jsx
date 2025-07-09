@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { sendContactMessage } from "../features/contact/contactThunk";
 import { useDispatch, useSelector } from "react-redux";
+import { sendContactMessage } from "../features/contact/contactThunk";
 import { clearFieldError } from "../features/contact/contactSlice";
 
 export const Contact = () => {
@@ -95,8 +95,8 @@ export const Contact = () => {
               value={formData.username}
               onChange={handleChange}
               placeholder="John Doe"
-              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500 ${
-                fieldErrors?.username ? "border-red-500" : "border-gray-300"
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                fieldErrors?.username ? "border-indigo-500" : "border-gray-300"
               }`}
             />
             {fieldErrors?.username && (
@@ -116,8 +116,8 @@ export const Contact = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
-              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500 ${
-                fieldErrors?.email ? "border-red-500" : "border-gray-300"
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                fieldErrors?.email ? "border-indigo-500" : "border-gray-300"
               }`}
             />
             {fieldErrors?.email && (
@@ -135,8 +135,8 @@ export const Contact = () => {
               value={formData.message}
               onChange={handleChange}
               placeholder="Your message..."
-              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-blue-500 ${
-                fieldErrors?.message ? "border-red-500" : "border-gray-300"
+              className={`mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                fieldErrors?.message ? "border-indigo-500" : "border-gray-300"
               }`}
             />
             {fieldErrors?.message && (
@@ -146,7 +146,7 @@ export const Contact = () => {
 
           <button
             type="submit"
-            className="w-full bg-red-600 cursor-pointer text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition duration-200"
+            className="w-full bg-indigo-600 cursor-pointer text-white font-semibold py-2 rounded-lg hover:bg-indigo-700 transition duration-200"
           >
             Send Message
           </button>

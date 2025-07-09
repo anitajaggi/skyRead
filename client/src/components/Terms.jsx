@@ -1,54 +1,85 @@
 export const TermsAndConditions = () => {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <h1 className="text-4xl font-bold mb-6 text-cente">Terms & Conditions</h1>
+    <section className="bg-white text-indigo-900 py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl sm:text-5xl font-bold text-indigo-700 mb-4">
+            Terms & Conditions
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Please read these terms and conditions carefully before using
+            skyRead.
+          </p>
+        </div>
 
-      <p className="mb-4 text-gray-700">
-        Welcome to Skylar.dev! By accessing this website, you agree to be bound
-        by the following terms and conditions.
-      </p>
+        <div className="space-y-8 text-base text-gray-700 leading-relaxed">
+          <div>
+            <p>
+              By accessing or using this website, you agree to be bound by the
+              terms outlined below. If you do not agree with any part of these
+              terms, please refrain from using our services.
+            </p>
+          </div>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">
-        1. Acceptance of Terms
-      </h2>
-      <p className="mb-4 text-gray-700">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-        gravida bibendum sapien, id blandit urna. If you do not agree with any
-        part of these terms, please do not use our website.
-      </p>
+          <div>
+            <h2 className="text-2xl font-semibold text-indigo-600 mb-2">
+              1. Acceptance of Terms
+            </h2>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
+              gravida bibendum sapien, id blandit urna. By continuing to use the
+              website, you accept all the terms herein.
+            </p>
+          </div>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">2. Use of the Site</h2>
-      <p className="mb-4 text-gray-700">
-        You agree not to use the website for any unlawful purpose. Sed sit amet
-        velit nec sapien suscipit feugiat. Users are responsible for all content
-        they post or share.
-      </p>
+          <div>
+            <h2 className="text-2xl font-semibold text-indigo-600 mb-2">
+              2. Use of the Site
+            </h2>
+            <p>
+              You agree not to use this website for any unlawful or prohibited
+              purpose. Users are responsible for any content they upload, share,
+              or distribute via Skylar.dev.
+            </p>
+          </div>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">
-        3. Intellectual Property
-      </h2>
-      <p className="mb-4 text-gray-700">
-        All content on this site, including text, graphics, logos, and images,
-        is the property of Skylar.dev unless otherwise stated. Unauthorized use
-        is prohibited.
-      </p>
+          <div>
+            <h2 className="text-2xl font-semibold text-indigo-600 mb-2">
+              3. Intellectual Property
+            </h2>
+            <p>
+              All content on this site, including but not limited to text,
+              logos, graphics, and images, is the property of Skylar.dev unless
+              otherwise noted. Unauthorized use is strictly prohibited.
+            </p>
+          </div>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">
-        4. Limitation of Liability
-      </h2>
-      <p className="mb-4 text-gray-700">
-        Skylar.dev is not liable for any damages that result from the use or
-        inability to use the website. Use at your own risk. Curabitur id nibh
-        nec justo volutpat pretium.
-      </p>
+          <div>
+            <h2 className="text-2xl font-semibold text-indigo-600 mb-2">
+              4. Limitation of Liability
+            </h2>
+            <p>
+              Skylar.dev shall not be held liable for any damages arising from
+              the use or inability to use the website. Your usage is entirely at
+              your own risk.
+            </p>
+          </div>
 
-      <h2 className="text-2xl font-semibold mt-6 mb-2">5. Governing Law</h2>
-      <p className="mb-4 text-gray-700">
-        These terms are governed by and construed in accordance with the laws of
-        your local jurisdiction, without regard to conflict of law principles.
-      </p>
+          <div>
+            <h2 className="text-2xl font-semibold text-indigo-600 mb-2">
+              5. Governing Law
+            </h2>
+            <p>
+              These terms are governed by and construed under the laws of your
+              local jurisdiction, without regard to conflict of law principles.
+            </p>
+          </div>
 
-      <p className="text-gray-600 mt-8">Last updated: May 16, 2025</p>
-    </div>
+          <div className="text-sm text-gray-500 pt-6 border-t mt-12">
+            <p>Last updated: june 11, 2025</p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };

@@ -86,13 +86,13 @@ export const useCategoryList = () => {
     const res = await dispatch(deleteMultipleCategories(selectedCategories));
 
     if (deleteMultipleCategories.fulfilled.match(res)) {
+      setSelectedCategories([]);
       if (categories.length === selectedCategories.length && page > 1) {
         setPage((prev) => prev - 1);
       } else {
         refreshCategories(page);
       }
     }
-
     setIsMultiConfirmOpen(false);
   };
 

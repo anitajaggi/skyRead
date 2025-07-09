@@ -18,8 +18,8 @@ export const createContact = async (req, res) => {
 };
 
 export const getContacts = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
   const skip = (page - 1) * limit;
 
   try {
@@ -78,7 +78,7 @@ export const deleteMultipleContacts = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "Messages deleted successfully!",
+      message: `${result.modifiedCount} Message(s) deleted successfully!`,
       result,
       success: true,
     });

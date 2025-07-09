@@ -11,11 +11,11 @@ export const Header = () => {
   const menuRef = useRef();
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
-  const menuLink = [
+  const menuLinks = [
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
-    { path: "/policy", label: "Privacy Policy" },
-    { path: "/terms", label: "Terms & Conditions" },
+    { path: "/policy", label: "Privacy" },
+    { path: "/terms", label: "Terms" },
     { path: "/contact", label: "Contact" },
   ];
 
@@ -23,7 +23,7 @@ export const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleKeyOrClick = (e) => {
+    const closeOnOutsideClick = (e) => {
       if (isOpen && menuRef.current && !menuRef.current.contains(e.target)) {
         setIsOpen(false);
       }
@@ -33,13 +33,13 @@ export const Header = () => {
     };
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleKeyOrClick);
-      document.addEventListener("keydown", handleKeyOrClick);
+      document.addEventListener("mousedown", closeOnOutsideClick);
+      document.addEventListener("keydown", closeOnOutsideClick);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleKeyOrClick);
-      document.removeEventListener("keydown", handleKeyOrClick);
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnOutsideClick);
     };
   }, [isOpen]);
 
@@ -56,78 +56,86 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-white fixed top-0 z-50 shadow w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="text-2xl font-bold text-black flex items-center gap-3">
-            <NavLink to={"/"}>skyRead</NavLink>
-            <div
-              className="text-black text-sm mt-2 cursor-pointer"
-              onClick={handleUserClick}
-            >
-              {isAuthenticated ? (
-                <span className="font-medium">
-                  {user?.isAdmin ? "Dashboard" : "Account"}
-                </span>
-              ) : (
-                <FaUserCircle className="text-xl" />
-              )}
-            </div>
+    <header className="fixed top-0 left-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-indigo-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-20 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xl font-semibold tracking-tight text-indigo-700">
+            <NavLink to="/" className="hover:text-indigo-500 transition-colors">
+              <span className="text-indigo-500">skyRead</span>
+            </NavLink>
           </div>
-          <nav className="hidden md:flex space-x-6 text-black font-medium">
-            {menuLink.map((link) => (
+
+          <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-indigo-800">
+            {menuLinks.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}
-                className="hover:text-red-500"
+                className={({ isActive }) =>
+                  `hover:text-indigo-500 transition-colors ${
+                    isActive ? "text-indigo-600 font-semibold" : ""
+                  }`
+                }
               >
                 {link.label}
               </NavLink>
             ))}
-            {isAuthenticated ? <LogoutButton /> : ""}
+            {isAuthenticated && <LogoutButton />}
           </nav>
+
+          <div
+            onClick={handleUserClick}
+            className="text-indigo-700 hover:text-indigo-500 cursor-pointer transition-colors"
+          >
+            {isAuthenticated ? (
+              <span className="text-sm font-medium">
+                {user?.isAdmin ? "Dashboard" : "Profile"}
+              </span>
+            ) : (
+              <FaUserCircle className="text-xl" />
+            )}
+          </div>
+
           <button
-            className="md:hidden text-black cursor-pointer"
+            className="md:hidden text-indigo-700"
             onClick={toggleMenu}
-            aria-label="Toggle menu"
+            aria-label="Toggle Menu"
           >
             {isOpen ? <IoClose size={24} /> : <RiMenu3Fill size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         ref={menuRef}
-        className={`absolute top-15 left-0 w-full bg-white px-4 pt-2 pb-4 space-y-2 shadow-md transition-all transform origin-top duration-300 md:hidden ${
-          isOpen
-            ? "scale-y-100 opacity-100 pointer-events-auto"
-            : "scale-y-0 opacity-0 pointer-events-none"
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out origin-top ${
+          isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        {menuLink.map((link) => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            onClick={() => setIsOpen(false)}
-            className="block text-gray-700 hover:text-teal-600"
-          >
-            {link.label}
-          </NavLink>
-        ))}
-        {isAuthenticated ? (
-          <div onClick={() => setIsOpen(false)}>
-            <LogoutButton />
-          </div>
-        ) : (
-          <NavLink
-            to={"/auth"}
-            onClick={() => setIsOpen(false)}
-            className="block text-gray-700 hover:text-teal-600"
-          >
-            Login
-          </NavLink>
-        )}
+        <div className="bg-white px-6 py-4 border-t border-indigo-100 space-y-3 text-sm font-medium text-indigo-800">
+          {menuLinks.map((link) => (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              onClick={() => setIsOpen(false)}
+              className="block hover:text-indigo-500"
+            >
+              {link.label}
+            </NavLink>
+          ))}
+          {isAuthenticated ? (
+            <div onClick={() => setIsOpen(false)}>
+              <LogoutButton />
+            </div>
+          ) : (
+            <NavLink
+              to="/auth"
+              onClick={() => setIsOpen(false)}
+              className="block hover:text-indigo-500"
+            >
+              Login
+            </NavLink>
+          )}
+        </div>
       </div>
     </header>
   );

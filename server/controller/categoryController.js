@@ -25,8 +25,8 @@ export const createCategory = async (req, res) => {
 };
 
 export const getCategories = async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default to page 1
-  const limit = parseInt(req.query.limit) || 10; // Default to 10 categories per page
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
   const skip = (page - 1) * limit;
 
   try {

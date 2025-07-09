@@ -11,26 +11,31 @@ export const ConfirmDialog = ({
     <Dialog
       open={isOpen}
       onClose={onClose}
-      className="fixed z-50 inset-0 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center"
     >
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      <Dialog.Panel className="bg-white rounded-lg shadow-lg p-6 z-10 w-full max-w-md">
-        <Dialog.Title className="text-lg font-medium text-gray-800">
+      <div
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity"
+        aria-hidden="true"
+      />
+
+      <Dialog.Panel className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-xl p-6 transition-all">
+        <Dialog.Title className="text-xl font-semibold text-indigo-700">
           {title}
         </Dialog.Title>
         <Dialog.Description className="mt-2 text-sm text-gray-600">
           {description}
         </Dialog.Description>
-        <div className="mt-4 flex justify-end gap-2">
+
+        <div className="mt-6 flex justify-end gap-3">
           <button
-            className="px-4 py-2 cursor-pointer  bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
             onClick={onClose}
+            className="px-4 py-2 cursor-pointer text-sm rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 cursor-pointer  bg-red-600 text-white rounded hover:bg-red-700"
             onClick={onConfirm}
+            className="px-4 py-2 text-sm cursor-pointer rounded-md bg-red-600 text-white hover:bg-red-700 transition"
           >
             Delete
           </button>

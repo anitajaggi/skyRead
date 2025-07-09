@@ -124,7 +124,6 @@ export const EditUserDialog = ({ isOpen, onClose, user, onSave }) => {
                   />
                 </div>
 
-                {/* Admin checkbox with error handling */}
                 <div>
                   {adminError && (
                     <p className="text-sm text-red-600 mb-1">{adminError}</p>

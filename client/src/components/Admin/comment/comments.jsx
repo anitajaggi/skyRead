@@ -27,9 +27,8 @@ export const Comments = () => {
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
-      {/* Header */}
       <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-800">Comments</h2>
+        <h2 className="text-2xl font-semibold text-indigo-700">Comments</h2>
         {selectedComments.length > 0 && (
           <button
             onClick={handleBulkDelete}
@@ -40,10 +39,9 @@ export const Comments = () => {
         )}
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+          <thead className="bg-indigo-50 text-xs uppercase text-indigo-600 border-b border-indigo-100">
             <tr>
               <th className="px-6 py-3">
                 <input
@@ -53,6 +51,7 @@ export const Comments = () => {
                     selectedComments.length === allComments.length &&
                     allComments.length > 0
                   }
+                  className="accent-indigo-600"
                 />
               </th>
               <th className="px-6 py-3">#</th>
@@ -71,11 +70,14 @@ export const Comments = () => {
                     type="checkbox"
                     checked={selectedComments.includes(comment._id)}
                     onChange={() => handleCheckboxChange(comment._id)}
+                    className="accent-indigo-600"
                   />
                 </td>
                 <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>
                 <td className="px-6 py-4">{comment.user.username}</td>
-                <td className="px-6 py-4">{comment.post}</td>
+                <td className="px-6 py-4">
+                  {comment.post.title.slice(0, 20)}...
+                </td>
                 <td className="px-6 py-4">{comment.message}</td>
                 <td className="px-6 py-4">
                   {new Date(comment.createdAt).toLocaleString()}

@@ -57,28 +57,33 @@ export const getComments = async (req, res) => {
 };
 
 export const getAllComments = async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
   const skip = (page - 1) * limit;
 
   try {
+    const totalComments = await Comment.countDocuments({ status: true });
+    const totalPages = Math.ceil(totalComments / limit);
+
     const comments = await Comment.find({ status: true })
       .populate("user", "username email")
+      .populate("post", "title")
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(Number(limit));
-
-    const totalComments = await Comment.countDocuments();
+      .limit(limit);
 
     res.status(200).json({
       success: true,
       comments,
-      totalPages: Math.ceil(totalComments / limit),
-      currentPage: Number(page),
+      totalComments,
+      totalPages,
+      currentPage: page,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Failed to fetch comments",
+      error: error.message,
     });
   }
 };
@@ -120,7 +125,6 @@ export const deleteMultipleComments = async (req, res) => {
       result,
     });
   } catch (error) {
-    console.error("Bulk delete error:", error);
     return res.status(500).json({
       message: "Bulk delete failed.",
       success: false,

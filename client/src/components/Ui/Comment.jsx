@@ -3,6 +3,7 @@ import { BsFillSendFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { addComment, getComments } from "../../features/comment/commentThunk";
 import { NavLink } from "react-router-dom";
+
 export default function CommentSection({ postId }) {
   const { comments } = useSelector((state) => state.comments);
   const { user } = useSelector((state) => state.auth);
@@ -25,56 +26,70 @@ export default function CommentSection({ postId }) {
   };
 
   return (
-    <div className="bg-white mt-5">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Leave a Comment</h2>
+    <div className="bg-white">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-700">
+        Leave a Comment
+      </h2>
+
       {user ? (
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="flex gap-2">
             <input
-              placeholder="Your comment"
+              placeholder="Share your thoughts..."
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-red-400"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-800"
             />
             <button
               type="submit"
-              className="bg-red-600 cursor-pointer text-white px-6 py-2 rounded-lg hover:bg-red-700 transition"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg transition"
+              title="Send"
             >
-              <BsFillSendFill />
+              <BsFillSendFill size={18} />
             </button>
           </div>
         </form>
       ) : (
-        <div className="flex gap-2">
-          <p className="text-gray-500">Please login to leave a comment.</p>
-          <NavLink to={"/auth"} className="text-red-600 underline">
+        <div className="text-gray-600 flex items-center gap-2 text-sm">
+          <p>Please login to leave a comment.</p>
+          <NavLink
+            to="/auth"
+            className="text-indigo-600 underline hover:text-indigo-800"
+          >
             Login
           </NavLink>
         </div>
       )}
 
       <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">
+        <h3 className="text-xl font-semibold mb-4 text-indigo-800">
           {comments?.length === 1
             ? "1 Comment"
             : `${comments?.length || 0} Comments`}
         </h3>
+
         <ul className="space-y-4">
           {comments.map((comment) => (
             <li
               key={comment._id}
-              className="border border-gray-200 p-2 rounded-lg bg-gray-50"
+              className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
             >
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-gray-800">
-                  {comment.user?.username}
-                </span>
-                <span className="text-sm text-gray-500">
-                  {new Date(comment.createdAt).toLocaleString()}
-                </span>
+              <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-sm uppercase">
+                {comment.user?.username?.charAt(0) || "?"}
               </div>
-              <p className="text-gray-700">{comment.message}</p>
+
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="text-indigo-700 font-semibold">
+                    {comment.user?.username}
+                  </h4>
+                  <span className="text-xs text-gray-400">
+                    {new Date(comment.createdAt).toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-gray-700 text-sm">{comment.message}</p>
+              </div>
             </li>
           ))}
         </ul>

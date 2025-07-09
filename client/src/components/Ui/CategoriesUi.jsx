@@ -11,30 +11,43 @@ export const CategoriesUi = ({ selectedCategory, setSelectedCategory }) => {
   }, [dispatch]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-1">
-      <div className="flex flex-wrap gap-2 mb-8">
+    <div className="max-w-7xl mx-auto px-4 mt-2 sm:px-6 lg:px-8">
+      <div className="flex flex-wrap items-center gap-4 mb-12 text-indigo-600 text-base font-semibold tracking-tight">
+        {/* All Category */}
         <div
-          className={`text-center md:font-bold text-sm cursor-pointer px-3 py-1 rounded ${
-            selectedCategory === null ? "bg-gray-200" : "hover:text-blue-500"
-          }`}
           onClick={() => setSelectedCategory(null)}
+          className={`cursor-pointer relative group transition-all duration-300 ${
+            selectedCategory === null
+              ? "text-indigo-900"
+              : "hover:text-indigo-900"
+          }`}
         >
           All
+          <span
+            className={`block h-[2px] bg-indigo-700 transition-all duration-300 absolute bottom-[-4px] left-0 group-hover:w-full ${
+              selectedCategory === null ? "w-full" : "w-0"
+            }`}
+          ></span>
         </div>
 
-        {categories.map((category, index) => {
+        {/* Individual Categories */}
+        {categories.map((category, idx) => {
           const isActive = selectedCategory === category.category;
+
           return (
             <div
-              key={index}
-              className={`text-center md:font-bold text-sm cursor-pointer px-3 py-1 rounded ${
-                isActive
-                  ? "bg-red-100 text-red-500"
-                  : "hover:text-red-500 hover:underline"
-              }`}
+              key={idx}
               onClick={() => setSelectedCategory(category.category)}
+              className={`cursor-pointer relative group transition-all duration-300 ${
+                isActive ? "text-indigo-900" : "hover:text-indigo-900"
+              }`}
             >
               {category.category}
+              <span
+                className={`block h-[2px] bg-indigo-700 transition-all duration-300 absolute bottom-[-4px] left-0 group-hover:w-full ${
+                  isActive ? "w-full" : "w-0"
+                }`}
+              ></span>
             </div>
           );
         })}

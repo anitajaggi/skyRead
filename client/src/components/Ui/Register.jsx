@@ -12,6 +12,7 @@ export const RegisterForm = () => {
     email: "",
     password: "",
   });
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -32,64 +33,75 @@ export const RegisterForm = () => {
     if (registerUser.fulfilled.match(res)) {
       await dispatch(currentUser());
       navigate("/profile");
-      setRegisterData({
-        username: "",
-        email: "",
-        password: "",
-      });
+      setRegisterData({ username: "", email: "", password: "" });
     }
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-8 rounded-xl shadow-md space-y-6 max-w-md mx-auto"
+    >
+      <h2 className="text-2xl font-bold text-indigo-700 mb-4 text-center">
+        Create Account
+      </h2>
+
       <div>
-        <label className="block text-gray-500">Full Name</label>
+        <label className="block text-sm font-medium text-indigo-700 mb-1">
+          Full Name
+        </label>
         <input
           type="text"
-          className="w-full px-4 py-2 border text-white border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="John Doe"
           name="username"
           value={registerData.username}
           onChange={handleOnChange}
+          placeholder="John Doe"
+          className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
         />
         {fieldErrors?.username && (
-          <p className="text-red-600 text-sm mt-1">{fieldErrors.username}</p>
+          <p className="text-sm text-red-600 mt-1">{fieldErrors.username}</p>
         )}
       </div>
+
       <div>
-        <label className="block text-gray-500">Email</label>
+        <label className="block text-sm font-medium text-indigo-700 mb-1">
+          Email
+        </label>
         <input
           type="email"
-          className="w-full px-4 py-2 border text-white border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="you@example.com"
           name="email"
-          autoComplete="username"
           value={registerData.email}
           onChange={handleOnChange}
+          autoComplete="username"
+          placeholder="you@example.com"
+          className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
         />
         {fieldErrors?.email && (
-          <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
+          <p className="text-sm text-red-600 mt-1">{fieldErrors.email}</p>
         )}
       </div>
+
       <div>
-        <label className="block text-gray-500">Password</label>
+        <label className="block text-sm font-medium text-indigo-700 mb-1">
+          Password
+        </label>
         <input
           type="password"
-          className="w-full px-4 py-2 border text-white border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="••••••••"
-          autoComplete="current-password"
           name="password"
           value={registerData.password}
           onChange={handleOnChange}
+          autoComplete="current-password"
+          placeholder="••••••••"
+          className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
         />
         {fieldErrors?.password && (
-          <p className="text-red-600 text-sm mt-1">{fieldErrors.password}</p>
+          <p className="text-sm text-red-600 mt-1">{fieldErrors.password}</p>
         )}
       </div>
+
       <button
         type="submit"
-        className="w-full bg-white cursor-pointer text-black py-2 rounded-lg hover:bg-red-600 transition
-        disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Register
       </button>

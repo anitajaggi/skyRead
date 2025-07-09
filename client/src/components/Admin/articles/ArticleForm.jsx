@@ -24,7 +24,6 @@ export const ArticleForm = forwardRef(
     const [fileError, setFileError] = useState("");
     const dispatch = useDispatch();
     const { fieldErrors } = useSelector((state) => state.articles);
-
     const { allCategories, loading } = useSelector((state) => state.category);
 
     useEffect(() => {
@@ -50,41 +49,30 @@ export const ArticleForm = forwardRef(
 
       if (type === "file") {
         const file = files[0];
-
         if (file && file.size > 5 * 1024 * 1024) {
           setFileError("Image must be less than 5MB.");
-          setArticleData((prev) => ({
-            ...prev,
-            [name]: null,
-          }));
+          setArticleData((prev) => ({ ...prev, [name]: null }));
           return;
         }
 
         setFileError("");
-        setArticleData((prev) => ({
-          ...prev,
-          [name]: file,
-        }));
+        setArticleData((prev) => ({ ...prev, [name]: file }));
       } else {
-        setArticleData((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
+        setArticleData((prev) => ({ ...prev, [name]: value }));
       }
+
       if (fieldErrors[name]) {
-        dispatch(clearFieldError(e.target.name));
+        dispatch(clearFieldError(name));
       }
     };
 
     const handleSubmit = async (e) => {
       e.preventDefault();
       let res;
+
       if (articleData.id) {
         res = await dispatch(
-          updateArticle({
-            id: articleData.id,
-            articleData,
-          })
+          updateArticle({ id: articleData.id, articleData })
         );
         if (updateArticle.fulfilled.match(res)) {
           setActiveTab(Object.keys(tabs)[0]);
@@ -108,60 +96,64 @@ export const ArticleForm = forwardRef(
         setActiveTab(Object.keys(tabs)[0]);
       }
     };
+
     return (
-      <form onSubmit={handleSubmit}>
-        <div className="p-4 bg-white rounded shadow">
-          <input
-            type="text"
-            name="title"
-            value={articleData.title}
-            onChange={handleChange}
-            placeholder="Title"
-            className="border px-3 py-2 rounded w-full my-2"
-          />
-          {fieldErrors.title && (
-            <p className="text-red-500 text-sm -mt-2 mb-2">
-              {fieldErrors.title}
-            </p>
-          )}
-          <textarea
-            name="content"
-            value={articleData.content}
-            onChange={handleChange}
-            placeholder="Content"
-            className="border px-3 py-2 rounded w-full my-2"
-            rows="5"
-          ></textarea>
-          {fieldErrors.content && (
-            <p className="text-red-500 text-sm -mt-2 mb-2">
-              {fieldErrors.content}
-            </p>
-          )}
-          <input
-            type="text"
-            value={articleData.tags.join(", ")}
-            onChange={(e) =>
-              setArticleData((prev) => ({
-                ...prev,
-                tags: e.target.value.split(",").map((tag) => tag.trim()),
-              }))
-            }
-            name="tags"
-            placeholder="Tag"
-            className="border px-3 py-2 rounded w-full my-2"
-          />
-          {fieldErrors.tags && (
-            <p className="text-red-500 text-sm -mt-2 mb-2">
-              {fieldErrors.tags}
-            </p>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <form onSubmit={handleSubmit} ref={ref}>
+        <div className="p-6 bg-white rounded-xl shadow-md space-y-4">
+          <div>
+            <input
+              type="text"
+              name="title"
+              value={articleData.title}
+              onChange={handleChange}
+              placeholder="Title"
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            {fieldErrors.title && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.title}</p>
+            )}
+          </div>
+
+          <div>
+            <textarea
+              name="content"
+              value={articleData.content}
+              onChange={handleChange}
+              placeholder="Content"
+              rows="5"
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            {fieldErrors.content && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.content}</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="tags"
+              value={articleData.tags.join(", ")}
+              onChange={(e) =>
+                setArticleData((prev) => ({
+                  ...prev,
+                  tags: e.target.value.split(",").map((tag) => tag.trim()),
+                }))
+              }
+              placeholder="Tags (comma separated)"
+              className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            {fieldErrors.tags && (
+              <p className="text-red-500 text-sm mt-1">{fieldErrors.tags}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <select
                 name="category"
                 value={articleData.category}
                 onChange={handleChange}
-                className="border px-3 py-2 rounded w-full my-2"
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option disabled value="">
                   Select Category
@@ -173,25 +165,25 @@ export const ArticleForm = forwardRef(
                 ))}
               </select>
               {fieldErrors.category && (
-                <p className="text-red-500 text-sm -mt-2 mb-2">
+                <p className="text-red-500 text-sm mt-1">
                   {fieldErrors.category}
                 </p>
               )}
             </div>
+
             <div>
               <input
                 type="file"
                 name="imgUrl"
                 onChange={handleChange}
-                id="imgUrl"
                 accept="image/*"
-                className="border px-3 py-2 rounded w-full my-2"
+                className="w-full border border-gray-300 px-4 py-2 rounded-lg"
               />
               {fileError && (
-                <p className="text-red-500 text-sm -mt-2 mb-2">{fileError}</p>
+                <p className="text-red-500 text-sm mt-1">{fileError}</p>
               )}
-              <div>
-                {articleData.imgUrl && (
+              {articleData.imgUrl && (
+                <div className="mt-2">
                   <img
                     src={
                       typeof articleData.imgUrl === "string"
@@ -199,17 +191,18 @@ export const ArticleForm = forwardRef(
                         : URL.createObjectURL(articleData.imgUrl)
                     }
                     alt="Article"
-                    className="w-24 h-16 object-contain rounded border"
+                    className="w-28 h-20 object-contain border rounded-lg"
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-2 my-2">
-            <label htmlFor="publish">Publish now</label>
+
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               name="published"
+              id="published"
               checked={articleData.published}
               onChange={(e) =>
                 setArticleData((prev) => ({
@@ -217,16 +210,20 @@ export const ArticleForm = forwardRef(
                   published: e.target.checked,
                 }))
               }
-              id="publish"
-              className="cursor-pointer"
+              className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
             />
+            <label htmlFor="published" className="text-sm text-gray-700">
+              Publish now
+            </label>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`text-white px-4 py-2 rounded focus:bg-gray-500 cursor-pointer ${
-              loading ? "bg-red-400 cursor-not-allowed" : "bg-red-600"
+            className={`w-full md:w-auto inline-block px-6 py-2 rounded-lg text-white font-medium transition cursor-pointer ${
+              loading
+                ? "bg-indigo-300 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
             {articleData.id ? "Update Article" : "Add Article"}

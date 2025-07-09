@@ -41,9 +41,8 @@ export const AllUsers = () => {
 
   return (
     <div className="mt-10 bg-white rounded-xl shadow-md overflow-hidden">
-      {/* Header and Bulk Delete Button */}
       <div className="p-4 border-b flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
+        <h2 className="text-2xl font-semibold text-indigo-700">Users</h2>
         {selectedUsers.length > 0 && (
           <button
             onClick={handleBulkDelete}
@@ -54,10 +53,9 @@ export const AllUsers = () => {
         )}
       </div>
 
-      {/* Users Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+          <thead className="bg-indigo-50 text-xs uppercase text-indigo-600 border-b border-indigo-100">
             <tr>
               <th className="px-6 py-3">
                 <input
@@ -68,6 +66,7 @@ export const AllUsers = () => {
                       users.filter((u) => !u.isAdmin).length &&
                     users.filter((u) => !u.isAdmin).length > 0
                   }
+                  className="accent-indigo-600"
                 />
               </th>
               <th className="px-6 py-3">#</th>
@@ -87,25 +86,30 @@ export const AllUsers = () => {
                     disabled={usr.isAdmin}
                     onChange={() => handleCheckboxChange(usr._id, usr.isAdmin)}
                     title={usr.isAdmin ? "Admins cannot be selected" : ""}
+                    className="accent-indigo-600"
                   />
                 </td>
                 <td className="px-6 py-4">{(page - 1) * limit + index + 1}</td>
                 <td className="px-6 py-4">{usr.username}</td>
                 <td className="px-6 py-4">{usr.email}</td>
-                <td
-                  className={`px-6 py-4 ${usr.isAdmin ? "bg-green-300" : ""}`}
-                >
-                  {usr.isAdmin ? "Admin" : "User"}
+                <td className="px-6 py-4">
+                  <span
+                    className={`py-1 px-3 rounded-full ${
+                      usr.isAdmin ? "bg-green-300 uppercase" : ""
+                    }`}
+                  >
+                    {usr.isAdmin ? "Admin" : "User"}
+                  </span>
                 </td>
                 <td className="px-6 py-4 flex justify-center gap-2">
                   <button
-                    className="text-blue-600 border border-blue-600 rounded-full p-1 hover:bg-blue-100"
+                    className="text-blue-600 border border-blue-600 cursor-pointer rounded-full p-1 hover:bg-blue-100"
                     onClick={() => handleEditClick(usr)}
                   >
                     <FaRegEdit />
                   </button>
                   <button
-                    className="text-red-600 border border-red-600 rounded-full p-1 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-red-600 border border-red-600 rounded-full cursor-pointer p-1 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={usr.isAdmin && isLastAdmin}
                     title={
                       usr.isAdmin && isLastAdmin
@@ -123,7 +127,6 @@ export const AllUsers = () => {
         </table>
       </div>
 
-      {/* Pagination */}
       <Pagination
         page={page}
         currentPage={currentPage}
@@ -132,7 +135,6 @@ export const AllUsers = () => {
         onPageChange={setPage}
       />
 
-      {/* Modals for Confirmation and Edit */}
       <ConfirmDialog
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}

@@ -8,6 +8,7 @@ export const LoginForm = () => {
   const { fieldErrors } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -19,6 +20,7 @@ export const LoginForm = () => {
       ...prevData,
       [name]: value,
     }));
+
     if (fieldErrors[e.target.name]) {
       dispatch(clearFieldError(e.target.name));
     }
@@ -30,23 +32,32 @@ export const LoginForm = () => {
     if (loginUser.fulfilled.match(res)) {
       const userRes = await dispatch(currentUser());
       const user = userRes.payload;
+
       if (user?.isAdmin) {
         navigate("/dashboard");
       } else {
         navigate("/");
       }
+
       setLoginData({ email: "", password: "" });
     }
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white p-6 rounded-xl shadow-lg max-w-md w-full"
+    >
+      <h2 className="text-2xl font-bold text-indigo-700 text-center">Login</h2>
+
       <div>
-        <label className="block text-gray-500">Email</label>
+        <label className="block text-sm font-medium text-gray-600 mb-1">
+          Email
+        </label>
         <input
           type="email"
           name="email"
-          className="w-full px-4 py-2 border text-white border-white placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-indigo-300 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-gray-400"
           placeholder="you@example.com"
           value={loginData.email}
           onChange={handleOnChange}
@@ -56,12 +67,15 @@ export const LoginForm = () => {
           <p className="text-red-600 text-sm mt-1">{fieldErrors.email}</p>
         )}
       </div>
+
       <div>
-        <label className="block text-gray-500">Password</label>
+        <label className="block text-sm font-medium text-gray-600 mb-1">
+          Password
+        </label>
         <input
           type="password"
           name="password"
-          className="w-full px-4 py-2 border text-white border-white placeholder:text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-indigo-300 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-gray-400"
           placeholder="••••••••"
           autoComplete="current-password"
           value={loginData.password}
@@ -71,9 +85,10 @@ export const LoginForm = () => {
           <p className="text-red-600 text-sm mt-1">{fieldErrors.password}</p>
         )}
       </div>
+
       <button
         type="submit"
-        className="w-full bg-white text-black cursor-pointer py-2 rounded-lg hover:bg-red-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Login
       </button>

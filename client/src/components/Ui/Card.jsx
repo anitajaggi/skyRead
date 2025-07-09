@@ -26,57 +26,69 @@ export const Card = ({ selectedCategory }) => {
     : publishedArticles;
 
   if (!filteredArticles || filteredArticles.length === 0) {
-    return <p className="text-center mt-6">No published articles available.</p>;
+    return (
+      <p className="text-center mt-12 text-gray-500 text-lg">
+        No published articles available.
+      </p>
+    );
   }
 
   return (
-    <div className="mt-6">
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {filteredArticles.map((article, index) => (
-          <div key={index}>
-            <NavLink to={`/articles/${article.slug}`} title="Read Article">
-              <article className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-                <div className="relative">
-                  <img
-                    src={article.imgUrl}
-                    alt={article.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <span className="absolute top-3 right-3 px-3 py-1 text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-full">
-                    {article.category}
-                  </span>
-                </div>
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">
-                    {article.title?.length > 80
-                      ? `${article.title.slice(0, 80)}...`
-                      : article.title || "No title available."}
-                  </h2>
-                  <p className="text-gray-600 mb-4">
-                    {article.content?.slice(0, 100) || "No summary available."}
-                    ...
-                  </p>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm text-gray-500">
-                      {article.author?.username || "Unknown Author"} •{" "}
-                      {new Date(article.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </article>
-            </NavLink>
-          </div>
+          <NavLink
+            to={`/articles/${article.slug}`}
+            key={index}
+            className="group block bg-white border border-indigo-100 hover:shadow-xl transition-shadow rounded-xl overflow-hidden"
+          >
+            <div className="h-52 overflow-hidden">
+              <img
+                src={article.imgUrl}
+                alt={article.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+
+            <div className="p-6 space-y-4">
+              <span className="inline-block text-xs font-medium uppercase tracking-wide text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">
+                {article.category}
+              </span>
+
+              <h2 className="text-xl font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                {article.title?.length > 80
+                  ? `${article.title.slice(0, 80)}...`
+                  : article.title || "Untitled"}
+              </h2>
+
+              <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                {article.content?.slice(0, 160) || "No summary available."}...
+              </p>
+
+              <div className="flex justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
+                <span>{article.author?.username || "Unknown"}</span>
+                <span>
+                  {new Date(article.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
+          </NavLink>
         ))}
       </div>
 
-      {/* Pagination Buttons */}
-      <Pagination
-        page={page}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        loading={loading}
-        onPageChange={setPage}
-      />
+      <div className="mt-12">
+        <Pagination
+          page={page}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          loading={loading}
+          onPageChange={setPage}
+        />
+      </div>
     </div>
   );
 };

@@ -12,10 +12,6 @@ body {
     --ms-scrollbar: none;
 }
 
-.active {
-    color: red;
-}
-
 body {
     background: #ffffff;
 }

@@ -5,6 +5,7 @@ import { fetchContacts } from "../../features/contact/contactThunk";
 import { getAllCategories } from "../../features/categories/categoryThunks";
 import { fetchArticles } from "../../features/Article/articleThunk";
 import { NavLink } from "react-router-dom";
+
 export const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const { totalUsers } = useSelector((state) => state.users);
@@ -13,6 +14,7 @@ export const Dashboard = () => {
   const { totalArticles } = useSelector((state) => state.articles);
 
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (user?.isAdmin) {
       dispatch(getAllUsers({ totalUsers }));
@@ -22,48 +24,52 @@ export const Dashboard = () => {
     }
   }, [dispatch, user]);
 
+  const cards = [
+    {
+      title: "Users",
+      count: totalUsers,
+      link: "/dashboard/users",
+      color: "bg-indigo-100 text-indigo-700",
+    },
+    {
+      title: "Messages",
+      count: totalContacts,
+      link: "/dashboard/messages",
+      color: "bg-yellow-100 text-yellow-700",
+    },
+    {
+      title: "Categories",
+      count: totalCategories,
+      link: "/dashboard/category",
+      color: "bg-green-100 text-green-700",
+    },
+    {
+      title: "Articles",
+      count: totalArticles,
+      link: "/dashboard/article",
+      color: "bg-red-100 text-red-700",
+    },
+  ];
+
   return (
-    <div className="flex">
-      <div className="flex-1 p-1">
-        <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        <p className="mt-2 font-bold text-red-600">{user.username}</p>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">
-          <div className="p-4 bg-white shadow rounded">
+    <div className="flex min-h-screen bg-gray-50 p-6">
+      <div className="flex-1">
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-gray-800">Welcome, Admin</h2>
+          <p className="text-red-600 font-semibold mt-1">{user.username}</p>
+        </div>
+
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((card, idx) => (
             <NavLink
-              to="/dashboard/users"
-              className="text-xl font-semibold hover:underline hover:text-gray-500"
+              to={card.link}
+              key={idx}
+              className={`rounded-2xl p-6 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 bg-white border-t-4 ${card.color}`}
             >
-              Total Users
+              <h3 className="text-lg font-semibold mb-2">{card.title}</h3>
+              <p className="text-3xl font-bold">{card.count}</p>
             </NavLink>
-            <p className="mt-2">{totalUsers}</p>
-          </div>
-          <div className="p-4 bg-white shadow rounded">
-            <NavLink
-              to="/dashboard/messages"
-              className="text-xl font-semibold hover:underline hover:text-gray-500"
-            >
-              Total Messages
-            </NavLink>
-            <p className="mt-2">{totalContacts}</p>
-          </div>
-          <div className="p-4 bg-white shadow rounded">
-            <NavLink
-              to="/dashboard/category"
-              className="text-xl font-semibold hover:underline hover:text-gray-500"
-            >
-              Total Categories
-            </NavLink>
-            <p className="mt-2">{totalCategories}</p>
-          </div>
-          <div className="p-4 bg-white shadow rounded">
-            <NavLink
-              to="/dashboard/article"
-              className="text-xl font-semibold hover:underline hover:text-gray-500"
-            >
-              Total Articles
-            </NavLink>
-            <p className="mt-2">{totalArticles}</p>
-          </div>
+          ))}
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-// for responsive sidebar in dashboard layout
 export const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(
     () => window.matchMedia(query).matches
