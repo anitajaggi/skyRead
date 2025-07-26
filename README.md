@@ -2,7 +2,7 @@
 
 A clean and functional blog platform built using the MERN stack, designed for admin-controlled content publishing with user interaction features like comments and likes.
 
-## 🌐 Live Demo
+### 🌐 Live Demo
 ▶️ [View Website](https://skyread.onrender.com/)
 ---
 
