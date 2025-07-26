@@ -1,10 +1,9 @@
 # Blog Platform with Admin-Panel (MERN Stack)
 
-## 🌐 Live Demo
-▶️ [View Website]([https://anitajaggi.github.io/forest-greenery/](https://skyread.onrender.com/))
-
 A clean and functional blog platform built using the MERN stack, designed for admin-controlled content publishing with user interaction features like comments and likes.
 
+## 🌐 Live Demo
+▶️ [View Website]([https://skyread.onrender.com/])
 ---
 
 ## Features
