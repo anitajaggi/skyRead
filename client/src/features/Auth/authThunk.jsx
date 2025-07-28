@@ -114,7 +114,7 @@ export const updateUserById = createAsyncThunk(
       toast.success(response.data.message || "User updated successfully");
       return response.data;
     } catch (error) {
-      toast.error(error.response.data.message || "Error updating user");
+      toast.error(error.response?.data.message || "Error updating user");
       return rejectWithValue(error.response.data);
     }
   }
