@@ -6,7 +6,7 @@ A clean and functional blog platform built using the MERN stack, designed for ad
 #### [View Website](https://skyread.onrender.com/)
 ---
 ### Project Report
-### [View Doc](https://docs.google.com/document/d/13x0moZTpNvyccSkdoQe3AipYXruq-OMwgOHM5oQ0v6Q/edit?usp=sharing)_
+#### [View Doc](https://docs.google.com/document/d/13x0moZTpNvyccSkdoQe3AipYXruq-OMwgOHM5oQ0v6Q/edit?usp=sharing)
 ---
 ## Features
 
