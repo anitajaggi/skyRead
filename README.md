@@ -2,20 +2,21 @@
 
 A clean and functional blog platform built using the MERN stack, designed for admin-controlled content publishing with user interaction features like comments and likes.
 
-### 🌐 Live Demo
-#### ▶️ [View Website](https://skyread.onrender.com/)
+### Live Demo
+#### [View Website](https://skyread.onrender.com/)
 ---
-
+### Project Report
+### [View Doc](https://docs.google.com/document/d/13x0moZTpNvyccSkdoQe3AipYXruq-OMwgOHM5oQ0v6Q/edit?usp=sharing)_
+---
 ## Features
 
-- 🔐 JWT Authentication (Admin & User roles)
-- ✍️ Admin-only blog creation and editing
-- 🗨️ User comment system
-- ❤️ Like functionality
-- 📄 Pagination support
-- ☁️ Cloudinary integration for blog images
-- 📱 Responsive UI with TailwindCSS
-- 📊 Admin Dashboard
+-  JWT Authentication (Admin & User roles)
+-  Admin-only blog creation and editing
+-  User comment system
+-  Pagination support
+-  Cloudinary integration for blog images
+-  Responsive UI with TailwindCSS
+-  Admin Dashboard
 
 ---
 
