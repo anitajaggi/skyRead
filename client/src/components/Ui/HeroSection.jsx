@@ -11,9 +11,9 @@ export const HeroSection = () => {
             </div>
 
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 tracking-tight leading-tight mb-6">
-              Elevate Your{" "}
+              Make Your{" "}
               <span className="text-indigo-600">Digital Reading</span>{" "}
-              Experience
+              better and easier
             </h1>
 
             <p className="sm:text-xl text-gray-700 leading-relaxed max-w-2xl mb-8">
