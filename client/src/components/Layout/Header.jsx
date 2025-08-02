@@ -57,7 +57,7 @@ export const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-indigo-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 lg:px-20 py-4">
+      <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xl font-semibold tracking-tight text-indigo-700">
             <NavLink to="/" className="hover:text-indigo-500 transition-colors">
