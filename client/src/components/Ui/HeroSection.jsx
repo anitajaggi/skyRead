@@ -6,7 +6,7 @@ export const HeroSection = () => {
           <div className="lg:col-span-7 relative z-10">
             <div className="mb-4">
               <span className="text-xs uppercase tracking-widest text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
-                Welcome
+                Hey there, reader!
               </span>
             </div>
 
@@ -17,10 +17,7 @@ export const HeroSection = () => {
             </h1>
 
             <p className="sm:text-xl text-gray-700 leading-relaxed max-w-2xl mb-8">
-              Discover a refined platform for fast, immersive, and
-              distraction-free reading. Curated content, sleek design, and
-              blazing-fast performance — tailored for curious minds and modern
-              readers who demand more from every scroll.
+              Welcome to a smarter way to read -- fast, focused, and free of clutter. Enjoy handpicked content, a clean look, and lightning speed. Perfect for curious minds who want more from every scroll.
             </p>
           </div>
 
