@@ -16,8 +16,7 @@ export const Footer = () => {
           <div className="md:col-span-2">
             <h2 className="text-3xl font-bold text-indigo-700 mb-3">skyRead</h2>
             <p className="text-sm text-black leading-relaxed">
-              Discover meaningful stories, curated insights, and thoughtful
-              content that fuels your mind. Crafted for curious readers.
+              Read interesting stories, articles, smart ideas, and content that makes you think -- all chosen for curios people like you.
             </p>
           </div>
 
