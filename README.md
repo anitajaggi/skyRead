@@ -56,8 +56,8 @@ npm install
 npm run dev
 
 ```
-## Admin Panel View
+## Admin Panel Preview
 
-<img src="assets/img1.png" alt="Banner" width="600"/>
-
+![Admin Panel](assets/img1.png)
+![Admin Panel](assets/img2.png)
 ![Admin Panel](assets/img2.png)
