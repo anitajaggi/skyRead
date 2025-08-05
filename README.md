@@ -60,4 +60,5 @@ npm run dev
 
 ![Admin Panel](assets/img1.png)
 ![Admin Panel](assets/img2.png)
-![Admin Panel](assets/img2.png)
+![Admin Panel](assets/img3.png)
+![Admin Panel](assets/img4.png)
