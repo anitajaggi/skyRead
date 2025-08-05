@@ -47,9 +47,14 @@ Other:
 cd server
 npm install
 npm start
+
 ```
 ### frontend
 ```bash
 cd client
 npm install
 npm run dev
+
+```
+#Admin Panel View
+<img src="assets/img1.png" alt="Banner" width="600"/>
