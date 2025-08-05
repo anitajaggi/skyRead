@@ -59,3 +59,5 @@ npm run dev
 ## Admin Panel View
 
 <img src="assets/img1.png" alt="Banner" width="600"/>
+
+![Admin Panel](assets/img2.png)
